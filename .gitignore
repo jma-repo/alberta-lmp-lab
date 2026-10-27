@@ -1,0 +1,26 @@
+# Environments and caches
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+pytest-of-*/
+
+# AESO source files and everything rebuilt from them (`uv run lmplab all`)
+data/
+mlflow.db
+mlartifacts/
+mlruns/
+artifacts/models/
+
+# Local tooling and notes
+.claude/
+HANDOFF.md
+*.log
+.DS_Store
+Thumbs.db
+
+# Committed on purpose (the snapshot a fresh clone and GitHub Pages serve without the AESO files):
+#   artifacts/reports/  derived results, a few hundred KB of JSON
+#   artifacts/pdup/     review letters for the synthetic submissions
+#   site/               the dashboard

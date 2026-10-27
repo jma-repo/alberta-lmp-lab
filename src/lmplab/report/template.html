@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alberta LMP Lab</title>
+  <meta name="description" content="AI for locational marginal pricing in Alberta: congestion analytics, pricing hubs, a calibrated day-ahead basis forecast, a SCED engine and automated PDUP model validation, on AESO public data.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css?v={{ v['styles.css'] }}">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 5 13h6l-1 9 8-11h-6l1-9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <div>
+        <div class="brand-name">Alberta LMP Lab</div>
+        <div class="brand-sub">AI for locational marginal pricing · AESO 2025 backcast · proof of concept</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a class="mode-chip" href="https://github.com/jma-repo/alberta-lmp-lab" title="Source code">Source</a>
+      <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" id="tab-overview" aria-controls="overview" aria-selected="true" data-tab="overview">Overview</button>
+      <button role="tab" id="tab-separation" aria-controls="separation" aria-selected="false" data-tab="separation">Price separation</button>
+      <button role="tab" id="tab-hubs" aria-controls="hubs" aria-selected="false" data-tab="hubs">Pricing hubs</button>
+      <button role="tab" id="tab-forecast" aria-controls="forecast" aria-selected="false" data-tab="forecast">AI forecast</button>
+      <button role="tab" id="tab-sced" aria-controls="sced" aria-selected="false" data-tab="sced">SCED &amp; what-ifs</button>
+      <button role="tab" id="tab-pdup" aria-controls="pdup" aria-selected="false" data-tab="pdup">Model validation</button>
+      <button role="tab" id="tab-agent" aria-controls="agent" aria-selected="false" data-tab="agent">AI agent</button>
+      <button role="tab" id="tab-about" aria-controls="about" aria-selected="false" data-tab="about">Data &amp; method</button>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- Overview -------------------------------------------------------------------------------->
+    <section class="panel" id="overview" role="tabpanel" aria-labelledby="tab-overview">
+      <div class="lede">
+        <p>Alberta's Restructured Energy Market replaces the single pool price with <strong>locational marginal prices</strong>:
+          generators are paid the price at their own node, while most loads pay a uniform <strong>Alberta Load Price</strong>.
+          This proof of concept shows what analytics and AI add to the two jobs that change creates &mdash; understanding
+          and forecasting congestion, and making sure the models behind interconnection studies are right &mdash; using
+          AESO's public 2025 area-level backcast and planning-area load and generation.</p>
+      </div>
+      <div class="hero-row">
+        <div class="hero card">
+          <div class="hero-label">Hours in 2025 when some planning area priced &gt;$5/MWh away from the Alberta Load Price</div>
+          <div class="hero-value" id="hero-value"></div>
+          <div class="hero-note" id="hero-note"></div>
+        </div>
+        <div class="kpis kpis-3" id="kpis"></div>
+      </div>
+      <div class="card">
+        <div class="section-head compact">
+          <div>
+            <h2>What the two AESO postings ask for, and where this project does it</h2>
+            <p class="muted">Senior Engineer or Analyst, Grid Analytics (R-2026870) and Senior Engineer, Model Validation (R-2026818).</p>
+          </div>
+        </div>
+        <div class="fit" id="fit"></div>
+      </div>
+      <div class="card">
+        <h2>Pipeline</h2>
+        <p class="muted">One command, <code>uv run lmplab all</code>, rebuilds everything from AESO's public files.</p>
+        <ol class="flow" id="flow"></ol>
+      </div>
+    </section>
+
+    <!-- Price separation ------------------------------------------------------------------------->
+    <section class="panel" id="separation" role="tabpanel" aria-labelledby="tab-separation" hidden>
+      <div class="section-head">
+        <div>
+          <h1>Where and when prices separate</h1>
+          <p class="muted">Basis = area LMP &minus; Alberta Load Price. Negative basis marks supply trapped behind a constraint;
+            positive marks a load pocket that has to import. 42 planning areas, 8,760 hours, AESO 2025 backcast.</p>
+        </div>
+      </div>
+      <div class="grid-2-1">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Mean basis by planning area</h2>
+            <p>Schematic map: each circle is a planning area at its place on AESO's map; lines join neighbours.</p>
+          </figcaption>
+          <div class="chart" id="chart-map" style="height: 560px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-map"></div></details>
+        </figure>
+        <div class="stack">
+          <div class="card">
+            <h2>Largest price spreads</h2>
+            <p class="muted">Highest-minus-lowest area LMP in the hour.</p>
+            <div id="events" class="table-scroll"></div>
+          </div>
+          <div class="card">
+            <h2>Data quality gate</h2>
+            <p class="muted">Checks that stop the pipeline when an assumption breaks.</p>
+            <dl class="facts-list" id="quality"></dl>
+            <ul class="findings-mini" id="quality-findings"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Daily Alberta Load Price and the spread around it</h2>
+            <p>Daily mean ALP; the band spans the lowest and highest area LMP that day. Axis capped at $260; daily highs reach $1,000 (all values in the table).</p>
+          </figcaption>
+          <div class="chart" id="chart-daily" style="height: 300px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-daily"></div></details>
+        </figure>
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Uniform-price surplus by month</h2>
+            <p id="surplus-caption"></p>
+          </figcaption>
+          <div class="chart" id="chart-surplus" style="height: 300px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-surplus"></div></details>
+        </figure>
+      </div>
+      <figure class="card chart-card">
+        <figcaption>
+          <h2>Basis duration curves</h2>
+          <p>Each area's hourly basis sorted high to low: Medicine Hat sits below the band most of the year, High Level above it, Calgary close to zero. Grey lines are the other 39 areas; axis capped at ±$45.</p>
+        </figcaption>
+        <div class="chart" id="chart-duration" style="height: 340px"></div>
+        <details class="table-view"><summary>Show as table</summary><div id="table-duration"></div></details>
+      </figure>
+    </section>
+
+    <!-- Pricing hubs ---------------------------------------------------------------------------->
+    <section class="panel" id="hubs" role="tabpanel" aria-labelledby="tab-hubs" hidden>
+      <div class="section-head">
+        <div>
+          <h1>Pricing hubs: predefined regions vs data-driven clusters</h1>
+          <p class="muted">Hubs give the market liquid reference prices for hedging. AESO judges a design on two numbers:
+            <strong>basis deviation</strong> (how far member prices sit from their hub, lower is better) and
+            <strong>minimum separation</strong> (the smallest gap between any two hub prices, higher is clearer).
+            Clusters are Ward linkage on hourly price series, restricted to neighbouring areas so each hub is one connected region, with at least three areas per hub.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Every design on AESO's two criteria</h2>
+            <p>Better designs sit to the right (distinct hubs) and lower (tighter fit).</p>
+          </figcaption>
+          <div class="chart" id="chart-hubs" style="height: 400px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-hubs"></div></details>
+        </figure>
+        <figure class="card chart-card">
+          <figcaption class="with-control">
+            <div>
+              <h2>Hub map</h2>
+              <p id="hubmap-caption"></p>
+            </div>
+            <div class="segmented" role="radiogroup" aria-label="Hub design" id="hub-choice"></div>
+          </figcaption>
+          <div class="chart" id="chart-hubmap" style="height: 400px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-hubmap"></div></details>
+        </figure>
+      </div>
+      <div class="card note-card" id="hub-note"></div>
+    </section>
+
+    <!-- Forecast ----------------------------------------------------------------------------------->
+    <section class="panel" id="forecast" role="tabpanel" aria-labelledby="tab-forecast" hidden>
+      <div class="section-head">
+        <div>
+          <h1>Day-ahead basis forecast with calibrated uncertainty</h1>
+          <p class="muted">One LightGBM model across all 42 areas predicts tomorrow's basis from conditions (load, imports,
+            regional net generation, the system price) and recent prices. Quantile models give 80% bands, recalibrated each day on the last
+            30 settled days (conformal prediction). Trained Jan&ndash;Aug, calibrated Sep, tested on Oct&ndash;Dec, the fall outage season.
+            Conditions are 2025 actuals standing in for the forecasts a production model would use, so scores are an upper bound.</p>
+        </div>
+      </div>
+      <div class="kpis kpis-4" id="forecast-kpis"></div>
+      <div class="grid-2">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Error against the baselines</h2>
+            <p>Mean absolute error on the test months, all area-hours and the hours that separated.</p>
+          </figcaption>
+          <div class="chart" id="chart-methods" style="height: 320px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-methods"></div></details>
+        </figure>
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Do the 80% bands hold 80%?</h2>
+            <p>Share of test hours inside the band, by month: raw quantiles, one fixed calibration, and daily rolling recalibration.</p>
+          </figcaption>
+          <div class="chart" id="chart-coverage" style="height: 320px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-coverage"></div></details>
+        </figure>
+      </div>
+      <figure class="card chart-card">
+        <figcaption class="with-control">
+          <div>
+            <h2>Forecast vs actual basis</h2>
+            <p id="showcase-caption"></p>
+          </div>
+          <div class="segmented" role="radiogroup" aria-label="Planning area" id="showcase-choice"></div>
+        </figcaption>
+        <div class="chart" id="chart-showcase" style="height: 340px"></div>
+      </figure>
+      <div class="grid-2">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>What drives the forecast</h2>
+            <p>Mean absolute SHAP contribution on test hours ($/MWh of basis).</p>
+          </figcaption>
+          <div class="chart" id="chart-drivers" style="height: 380px"></div>
+        </figure>
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>The model finds the export limit on its own</h2>
+            <p>Average SHAP effect of a region's own net generation on its areas' basis. A flat line that turns down is a constraint starting to bind.</p>
+          </figcaption>
+          <div class="chart" id="chart-dependence" style="height: 380px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-dependence"></div></details>
+        </figure>
+      </div>
+      <div class="grid-2">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Separation risk: does a 30% forecast mean 30%?</h2>
+            <p id="reliability-caption"></p>
+          </figcaption>
+          <div class="chart" id="chart-reliability" style="height: 320px"></div>
+        </figure>
+        <div class="card">
+          <h2>Skill by area</h2>
+          <p class="muted">Test-period error, band coverage and separation AUC per planning area.</p>
+          <div id="forecast-areas" class="table-scroll tall"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCED ------------------------------------------------------------------------------------>
+    <section class="panel" id="sced" role="tabpanel" aria-labelledby="tab-sced" hidden>
+      <div class="section-head">
+        <div>
+          <h1>A transparent SCED: prices straight from the duals</h1>
+          <p class="muted">DC optimal power flow with N-1 security and losses, solved as a linear program (HiGHS). LMP = MCE
+            (energy at the reference bus) + MCL (losses) + MCC (congestion), read from the shadow prices of the balance and
+            flow constraints, then checked against brute force: re-dispatch with one more MW at the bus.</p>
+        </div>
+      </div>
+      <h2 class="subhead">AESO's three-bus examples, reproduced</h2>
+      <div class="examples" id="examples"></div>
+      <div class="grid-2-1">
+        <figure class="card chart-card">
+          <figcaption class="with-control">
+            <div>
+              <h2>Stylized seven-zone Alberta network</h2>
+              <p id="network-caption"></p>
+            </div>
+            <div class="segmented" role="radiogroup" aria-label="Hour" id="network-choice"></div>
+          </figcaption>
+          <div class="network" id="network"></div>
+          <p class="footnote">Illustrative network tuned to behave like Alberta's corridors; not AESO's model.</p>
+        </figure>
+        <div class="card">
+          <h2>LMP components</h2>
+          <p class="muted">$/MWh, reference bus Central.</p>
+          <div id="components"></div>
+          <div id="binding"></div>
+        </div>
+      </div>
+      <h2 class="subhead">Probabilistic congestion: what if 400 MW more wind connects in the south-east?</h2>
+      <p class="muted narrow" id="mc-caption"></p>
+      <div class="kpis kpis-4" id="whatif-kpis"></div>
+      <div class="grid-2">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Zone prices across the sampled hours</h2>
+            <p>Mean and 10th&ndash;90th percentile LMP by zone, today vs with the new wind.</p>
+          </figcaption>
+          <div class="chart" id="chart-zones" style="height: 340px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-zones"></div></details>
+        </figure>
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Which upgrade is worth it? Ask the duals, then check</h2>
+            <p>Value of one more MW of rating on each corridor ($k per MW-year), from the shadow prices of the limits that bind.</p>
+          </figcaption>
+          <div class="chart" id="chart-ratings" style="height: 340px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-ratings"></div></details>
+        </figure>
+      </div>
+      <div class="card">
+        <h2>Re-dispatch check of the upgrade options</h2>
+        <p class="muted">Same sampled hours for every scenario, so differences are the scenario's effect, not sampling noise.</p>
+        <div id="scenario-table" class="table-scroll"></div>
+      </div>
+    </section>
+
+    <!-- PDUP ------------------------------------------------------------------------------------>
+    <section class="panel" id="pdup" role="tabpanel" aria-labelledby="tab-pdup" hidden>
+      <div class="section-head">
+        <div>
+          <h1>PDUP model validation: a structured first-pass review</h1>
+          <p class="muted">A reviewer's checklist as code: 30 rules over data, topology, lines, transformers, generators and
+            dynamic models, then an AC power flow, short-circuit ratio, sensitivity and an anomaly model trained on accepted
+            models. Two synthetic submissions: a wind farm with typical data errors and a clean solar-plus-storage project.</p>
+        </div>
+        <div class="segmented" role="radiogroup" aria-label="Project" id="project-choice"></div>
+      </div>
+      <div class="outcome card" id="outcome"></div>
+      <div class="grid-2">
+        <div class="card">
+          <h2>Findings</h2>
+          <p class="muted">Deficiencies must be corrected; clarifications need an answer. Probable causes are inferred from the numbers.</p>
+          <div class="finding-list" id="findings"></div>
+        </div>
+        <div class="card">
+          <h2>Checklist</h2>
+          <p class="muted">Every rule for both projects.</p>
+          <div id="checklist" class="table-scroll tall"></div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Reactive capability at the POI</h2>
+            <p>Range each plant delivers at full output vs what a 0.95 power factor requires.</p>
+          </figcaption>
+          <div class="chart" id="chart-pq" style="height: 260px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-pq"></div></details>
+        </figure>
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>Sensitivity of the reactive margin</h2>
+            <p id="sensitivity-caption"></p>
+          </figcaption>
+          <div class="chart" id="chart-sensitivity" style="height: 260px"></div>
+          <details class="table-view"><summary>Show as table</summary><div id="table-sensitivity"></div></details>
+        </figure>
+      </div>
+      <div class="grid-2">
+        <figure class="card chart-card">
+          <figcaption>
+            <h2>The anomaly the range checks miss</h2>
+            <p>600 accepted 34.5 kV cable models (synthetic library) and the submitted collectors, per-km R and X on log scales.</p>
+          </figcaption>
+          <div class="chart" id="chart-anomaly" style="height: 380px"></div>
+        </figure>
+        <div class="card">
+          <h2>Letter to the market participant</h2>
+          <p class="muted">Generated from the findings; the summary paragraph can be drafted by a local LLM.</p>
+          <div class="letter" id="letter"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Agent ------------------------------------------------------------------------------------>
+    <section class="panel" id="agent" role="tabpanel" aria-labelledby="tab-agent" hidden>
+      <div class="section-head">
+        <div>
+          <h1>Agentic analyst: tools, not guesses</h1>
+          <p class="muted">A local LLM plans tool calls over the warehouse, the forecast, the SCED engine and the PDUP reviews,
+            then writes the answer from what the tools return. Every number in an answer is traced back to a tool result.</p>
+        </div>
+      </div>
+      <div class="grid-2-1">
+        <div class="transcripts" id="transcripts"></div>
+        <div class="stack">
+          <div class="card">
+            <h2>Tools</h2>
+            <ul class="tool-list" id="tools"></ul>
+          </div>
+          <div class="card honesty">
+            <h2>Guardrails</h2>
+            <ul>
+              <li><strong>Local only.</strong> The model runs in LM Studio on this machine; the client refuses non-local endpoints.</li>
+              <li><strong>Read-only SQL.</strong> One SELECT, read-only connection, file access off, 50-row cap.</li>
+              <li><strong>Verified facts.</strong> Each tool returns pre-written sentences next to its raw fields; small models paraphrase far more reliably than they read tables.</li>
+              <li><strong>Number tracing.</strong> Every figure in the answer is matched to a tool result; untraced figures are flagged.</li>
+              <li><strong>Offline fallback.</strong> Without a model server, a deterministic planner answers the same questions.</li>
+            </ul>
+          </div>
+          <div class="card honesty">
+            <h2>What the model choice taught</h2>
+            <ul id="model-notes"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -------------------------------------------------------------------------------------->
+    <section class="panel" id="about" role="tabpanel" aria-labelledby="tab-about" hidden>
+      <div class="section-head">
+        <div>
+          <h1>Data, method and limits</h1>
+          <p class="muted">What is real, what is synthetic, and what a production version would need.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h2>AESO public data used</h2>
+          <ul class="source-list" id="sources"></ul>
+          <p class="footnote">AESO data are used under AESO's terms of use; they are downloaded by <code>lmplab fetch</code> and never committed to the repository.</p>
+        </div>
+        <div class="card honesty">
+          <h2>Honest limits</h2>
+          <ul>
+            <li><strong>Area level, not nodal.</strong> The backcast gives one LMP per planning area; AESO's own hub analysis uses bus-level prices, so basis deviations here run higher.</li>
+            <li><strong>Forecast inputs are actuals.</strong> Load, regional generation and the system price are 2025 actuals standing in for the forecasts a production model would use, so scores are an upper bound.</li>
+            <li><strong>Surplus is not congestion rent.</strong> The uniform-price surplus includes loss rent and is computed at area level; AESO's $91M congestion rent is the comparable published figure.</li>
+            <li><strong>Stylized network.</strong> The seven-zone SCED studies are illustrative, tuned to behave like Alberta's corridors, not AESO's PSS/E model.</li>
+            <li><strong>Synthetic PDUPs.</strong> Both submissions, the screening ranges and the accepted-model library are invented for the demonstration; real reviews follow the AESO PDUP checklist and ISO rules.</li>
+            <li><strong>YAML, not PSS/E files.</strong> Submissions are YAML stand-ins for PSS/E RAW/DYR files and AESO data forms; a production version would read the case files directly and run AESO's dynamic model performance test bench.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Stack</h2>
+        <div class="stack-grid" id="stack"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Built <time>{{ generated_at }}</time> · AESO public data, analysis by James Ma · not affiliated with or endorsed by the AESO</span>
+    <span>Python · DuckDB · LightGBM · SciPy HiGHS · pandapower · MLflow · LM Studio · Plotly</span>
+  </footer>
+
+  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+  <script id="dashboard-data" type="application/json">{{ data_json | safe }}</script>
+  <script src="assets/plotly.min.js?v={{ v['plotly.min.js'] }}"></script>
+  <script src="assets/app.js?v={{ v['app.js'] }}"></script>
+</body>
+</html>

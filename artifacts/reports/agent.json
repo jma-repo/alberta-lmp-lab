@@ -1,0 +1,771 @@
+{
+ "tools": [
+  {
+   "name": "query_warehouse",
+   "description": "Run one read-only SELECT on the warehouse and return up to 50 rows.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "sql": {
+      "type": "string",
+      "description": "A single DuckDB SELECT statement over area, v_hour, v_system."
+     }
+    },
+    "required": [
+     "sql"
+    ]
+   }
+  },
+  {
+   "name": "area_profile",
+   "description": "Price level, separation from the Alberta Load Price, and day-ahead forecast skill for a planning area.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "area": {
+      "type": "string",
+      "description": "Planning area name (e.g. 'Medicine Hat') or number (e.g. '4')."
+     }
+    },
+    "required": [
+     "area"
+    ]
+   }
+  },
+  {
+   "name": "hub_options",
+   "description": "Compare predefined and clustered pricing hub designs on basis deviation and minimum separation.",
+   "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+   }
+  },
+  {
+   "name": "run_what_if",
+   "description": "Dispatch the stylized Alberta network with N-1 security for sampled hours, with added south-east wind and/or an uprated corridor, and compare with today's system.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "add_se_wind_mw": {
+      "type": "number",
+      "description": "MW of wind added in the Southeast zone."
+     },
+     "uprate_corridor": {
+      "type": "string",
+      "description": "Corridor to uprate, e.g. 'SW-SE', 'CEN-SE', 'NW-EDM'."
+     },
+     "uprate_mw": {
+      "type": "number",
+      "description": "MW added to every circuit of the corridor."
+     }
+    },
+    "required": []
+   }
+  },
+  {
+   "name": "pdup_review",
+   "description": "Outcome and main findings of the automated PDUP model review for a project.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "project": {
+      "type": "string",
+      "description": "Project name or id, e.g. 'Prairie Ridge' or 'SYN-0002'."
+     }
+    },
+    "required": [
+     "project"
+    ]
+   }
+  },
+  {
+   "name": "lmp_example",
+   "description": "AESO's three-bus SCED example (1, 2 or 3) priced by the engine: dispatch, LMP components, and the prices AESO published.",
+   "parameters": {
+    "type": "object",
+    "properties": {
+     "number": {
+      "type": "integer",
+      "description": "Example number 1, 2 or 3."
+     }
+    },
+    "required": [
+     "number"
+    ]
+   }
+  }
+ ],
+ "transcripts": [
+  {
+   "steps": [
+    {
+     "tool": "area_profile",
+     "arguments": {
+      "area": "Medicine Hat"
+     },
+     "result": {
+      "area": "4 Medicine Hat",
+      "region": "Southeast",
+      "mean_lmp": 37.64,
+      "mean_basis": -8.63,
+      "share_separated": 0.4317,
+      "share_below_alp": 0.4271,
+      "share_above_alp": 0.0047,
+      "mean_net_generation_mw": 405.2,
+      "annual_alp": 47.87,
+      "forecast_mae": 8.924,
+      "uniform_price_mae": 14.545,
+      "interval_coverage": 0.7649,
+      "separation_auc": 0.795,
+      "top_drivers_in_region": [
+       {
+        "feature": "System price (ALP)",
+        "mean_abs_shap": 1.033
+       },
+       {
+        "feature": "Mean basis, trailing week",
+        "mean_abs_shap": 0.852
+       },
+       {
+        "feature": "Basis 24 h earlier",
+        "mean_abs_shap": 0.793
+       }
+      ],
+      "facts": "4 Medicine Hat averaged $37.64/MWh against an annual ALP of $47.87, separating from it 43% of hours, mostly below it; its mean net generation is +405 MW, the signature of surplus supply behind a constraint. The day-ahead model's error is $8.92/MWh against $14.54 for a uniform price, its 80% bands cover 76%, and the strongest drivers in the Southeast are system price (alp), mean basis, trailing week, basis 24 h earlier [area_profile]."
+     }
+    }
+   ],
+   "answer": "Medicine Hat sits in the Southeast, where local supply exceeds demand: it averages +405 MW of net generation, the signature of surplus supply behind a transmission constraint. That cheap local power can't fully flow to the rest of the system, so the area prices below the Alberta Load Price \u2014 averaging $37.64/MWh against an annual ALP of $47.87, a mean basis of \u2212$8.63/MWh. It separates from the ALP 43% of hours, almost always below (42.7% below vs 0.5% above) [area_profile].\n\nDay-ahead basis forecasting is decent: the model's mean absolute error is $8.92/MWh, well under the $14.54/MWh a uniform-price assumption would give, and its 80% prediction bands cover 76% of outcomes. The strongest drivers are the system price (ALP), trailing-week mean basis, and basis 24 h earlier [area_profile].",
+   "mode": "local LLM (qwen/qwen3.8-27b)",
+   "question": "Why does Medicine Hat price below the Alberta Load Price, and how well can we forecast its basis a day ahead?",
+   "grounding": {
+    "numbers": 12,
+    "traced": 12,
+    "untraced": []
+   },
+   "seconds": 186.5,
+   "answer_source": "model"
+  },
+  {
+   "steps": [
+    {
+     "tool": "run_what_if",
+     "arguments": {
+      "add_se_wind_mw": 400
+     },
+     "result": {
+      "hours_sampled": 120,
+      "scenario": {
+       "add_capacity": {
+        "SE wind": 400.0
+       }
+      },
+      "mean_price_by_zone": {
+       "NW": {
+        "today": 47.91,
+        "scenario": 47.75
+       },
+       "NE": {
+        "today": 40.89,
+        "scenario": 40.37
+       },
+       "EDM": {
+        "today": 41.75,
+        "scenario": 41.57
+       },
+       "CEN": {
+        "today": 42.5,
+        "scenario": 42.4
+       },
+       "CAL": {
+        "today": 43.6,
+        "scenario": 43.84
+       },
+       "SW": {
+        "today": 38.5,
+        "scenario": 37.81
+       },
+       "SE": {
+        "today": 39.05,
+        "scenario": 36.8
+       }
+      },
+      "alp": {
+       "today": 42.15,
+       "scenario": 41.82
+      },
+      "curtailment_mw": {
+       "today": 3.3,
+       "scenario": 14.4
+      },
+      "production_cost_saving_musd_per_year": 50.9,
+      "binding_limits_scenario": {
+       "CAL-SW 2 | loss of CAL-SW 1": 0.242,
+       "SW-SE | loss of CEN-SE": 0.175,
+       "NW-EDM 2 | loss of NW-EDM 1": 0.092,
+       "SW-SE | loss of CEN-CAL": 0.025
+      },
+      "rating_value_kusd_per_mw_year": {
+       "CAL-SW": 67.4,
+       "NW-EDM": 40.5,
+       "SW-SE": 35.3,
+       "EDM-CAL": 1.3
+      },
+      "note": "Stylized seven-zone network, not AESO's model.",
+      "facts": "With 400 MW of south-east wind, the south-east price moves from $39.05 to $36.8/MWh, curtailment from 3.3 to 14.4 MW on average, and production cost falls $50.9M a year across 120 sampled hours; the most valuable rating is then CAL-SW [run_what_if, stylized network]."
+     }
+    },
+    {
+     "tool": "run_what_if",
+     "arguments": {
+      "add_se_wind_mw": 400,
+      "uprate_corridor": "SW-SE",
+      "uprate_mw": 400
+     },
+     "result": {
+      "hours_sampled": 120,
+      "scenario": {
+       "add_capacity": {
+        "SE wind": 400.0
+       },
+       "uprate": {
+        "SW-SE": 400.0
+       }
+      },
+      "mean_price_by_zone": {
+       "NW": {
+        "today": 47.91,
+        "scenario": 47.76
+       },
+       "NE": {
+        "today": 40.89,
+        "scenario": 40.65
+       },
+       "EDM": {
+        "today": 41.75,
+        "scenario": 41.59
+       },
+       "CEN": {
+        "today": 42.5,
+        "scenario": 42.34
+       },
+       "CAL": {
+        "today": 43.6,
+        "scenario": 43.36
+       },
+       "SW": {
+        "today": 38.5,
+        "scenario": 37.37
+       },
+       "SE": {
+        "today": 39.05,
+        "scenario": 38.26
+       }
+      },
+      "alp": {
+       "today": 42.15,
+       "scenario": 41.86
+      },
+      "curtailment_mw": {
+       "today": 3.3,
+       "scenario": 8.2
+      },
+      "production_cost_saving_musd_per_year": 54.0,
+      "binding_limits_scenario": {
+       "CAL-SW 2 | loss of CAL-SW 1": 0.225,
+       "NW-EDM 2 | loss of NW-EDM 1": 0.092,
+       "CEN-SE | loss of SW-SE": 0.025,
+       "EDM-CAL | loss of CEN-CAL": 0.017
+      },
+      "rating_value_kusd_per_mw_year": {
+       "CAL-SW": 60.7,
+       "NW-EDM": 40.4,
+       "CEN-SE": 9.2,
+       "EDM-CAL": 1.2
+      },
+      "note": "Stylized seven-zone network, not AESO's model.",
+      "facts": "With 400 MW of south-east wind and a 400 MW uprate of SW-SE, the south-east price moves from $39.05 to $38.26/MWh, curtailment from 3.3 to 8.2 MW on average, and production cost falls $54.0M a year across 120 sampled hours; the most valuable rating is then CAL-SW [run_what_if, stylized network]."
+     }
+    }
+   ],
+   "answer": "Adding 400 MW of SE wind pushes the SE price down from $39.05 to $36.8/MWh and lifts average curtailment from 3.3 to 14.4 MW, while saving $50.9M/yr in production cost [run_what_if].\n\nUprating SW-SE by 400 MW helps: SE price falls only to $38.26/MWh, curtailment stays at 8.2 MW, and savings rise to $54.0M/yr [run_what_if]. So the uprate roughly halves the extra curtailment and softens the SE price drop, but the binding constraint shifts \u2014 CAL-SW remains the most valuable rating in both cases [run_what_if]. Note: stylized seven-zone network, not AESO's model [run_what_if].",
+   "mode": "local LLM (qwen/qwen3.8-27b)",
+   "question": "If 400 MW of new wind connects in the Southeast, what happens to prices and curtailment, and does uprating the SW-SE corridor by 400 MW help?",
+   "grounding": {
+    "numbers": 10,
+    "traced": 10,
+    "untraced": []
+   },
+   "seconds": 169.0,
+   "answer_source": "model"
+  },
+  {
+   "steps": [
+    {
+     "tool": "pdup_review",
+     "arguments": {
+      "project": "Prairie Ridge"
+     },
+     "result": {
+      "project": "Prairie Ridge Wind (synthetic)",
+      "outcome": "Resubmission required",
+      "deficiencies": 10,
+      "clarifications": 5,
+      "top_findings": [
+       {
+        "rule": "PF-01",
+        "severity": "error",
+        "element": "Prairie Ridge Wind (synthetic)",
+        "finding": "The AC power flow does not reach a valid solution at full output with the data as submitted. It solves to a valid operating point once GSU 2 kv_lv is set to 0.69.",
+        "probable_cause": "Root cause isolated by re-solving with each suspected correction on its own."
+       },
+       {
+        "rule": "PF-02",
+        "severity": "error",
+        "element": "Prairie Ridge Wind (synthetic)",
+        "finding": "At 197 MW the plant delivers +23 / -104 Mvar at the POI; 0.95 power factor needs +/-65 Mvar.",
+        "probable_cause": null
+       },
+       {
+        "rule": "TOP-02",
+        "severity": "error",
+        "element": "GSU 2",
+        "finding": "LV winding is 690 kV but bus G2 is 0.69 kV.",
+        "probable_cause": "The winding voltage looks like it was entered in volts: 690 -> 0.69 kV."
+       },
+       {
+        "rule": "XF-01",
+        "severity": "error",
+        "element": "Main transformer",
+        "finding": "Impedance 5.56% on 180 MVA is outside 6-15% for a main transformer.",
+        "probable_cause": "The value looks like it is on the 100 MVA system base: 5.56% x 180/100 = 10.0% on the transformer's own base, which is typical."
+       },
+       {
+        "rule": "LINE-01",
+        "severity": "error",
+        "element": "Collector 2",
+        "finding": "X = 1.428 ohm/km, outside 0.08-0.25 ohm/km for 34.5 kV cable.",
+        "probable_cause": "Likely ohms typed into the p.u. field: read that way it is 0.120 ohm/km, a normal value (0.09074 p.u. on the study base)."
+       },
+       {
+        "rule": "DYN-04",
+        "severity": "error",
+        "element": "WTG group 1 REECA1, WTG group 2 REECA1",
+        "finding": "Imax = 0.9 p.u. cannot carry rated P (0.900) with the required Q (0.297): needs 0.948.",
+        "probable_cause": null
+       },
+       {
+        "rule": "DYN-05",
+        "severity": "error",
+        "element": "WTG group 1 REPCA1, WTG group 2 REPCA1",
+        "finding": "Ddn = 5 gives a 20% droop, outside 2-5%.",
+        "probable_cause": null
+       },
+       {
+        "rule": "TOP-03",
+        "severity": "error",
+        "element": "Main transformer",
+        "finding": "The YNd1 main transformer has a delta low-voltage winding and no grounding transformer is modelled on MV.",
+        "probable_cause": null
+       }
+      ],
+      "facts": "Prairie Ridge Wind (synthetic): Resubmission required with 10 deficiencies and 5 clarifications. Fix first: PF-01 Prairie Ridge Wind (synthetic) - The AC power flow does not reach a valid solution at full output with the data as submitted. It solves to a valid operating point once GSU 2 kv_lv is set to 0.69.; PF-02 Prairie Ridge Wind (synthetic) - At 197 MW the plant delivers +23 / -104 Mvar at the POI; 0.95 power factor needs +/-65 Mvar.; TOP-02 GSU 2 - LV winding is 690 kV but bus G2 is 0.69 kV. [pdup_review]."
+     }
+    }
+   ],
+   "answer": "No \u2014 the Prairie Ridge Wind PDUP is not ready. The automated review returned \"Resubmission required\" with 10 deficiencies and 5 clarifications [pdup_review].\n\nFix first: the AC power flow does not reach a valid solution at full output with the data as submitted. It solves to a valid operating point once GSU 2 kv_lv is set to 0.69 [pdup_review]. The probable cause is a unit-entry error: GSU 2's LV winding is listed as 690 kV while bus G2 is 0.69 kV \u2014 the winding voltage looks like it was entered in volts (690 \u2192 0.69 kV) [pdup_review].\n\nOther errors to clear before interconnection studies include the reactive capability shortfall at 197 MW (+23/\u2212104 Mvar vs. \u00b165 Mvar needed for 0.95 PF), the main transformer impedance base, the Collector 2 reactance unit, WTG Imax and droop settings, and the missing MV grounding transformer [pdup_review].",
+   "mode": "local LLM (qwen/qwen3.8-27b)",
+   "question": "Is the Prairie Ridge Wind PDUP ready for interconnection studies? What must the developer fix first?",
+   "grounding": {
+    "numbers": 15,
+    "traced": 15,
+    "untraced": []
+   },
+   "seconds": 103.6,
+   "answer_source": "model"
+  },
+  {
+   "steps": [
+    {
+     "tool": "query_warehouse",
+     "arguments": {
+      "sql": "SELECT name, COUNT(*) AS hours_at_cap FROM v_hour WHERE lmp >= 1000 GROUP BY name ORDER BY hours_at_cap DESC, name"
+     },
+     "result": {
+      "columns": [
+       "name",
+       "hours_at_cap"
+      ],
+      "rows": [
+       [
+        "High Level",
+        60
+       ],
+       [
+        "Peace River",
+        47
+       ],
+       [
+        "Rainbow Lake",
+        44
+       ],
+       [
+        "Grande Prairie",
+        43
+       ],
+       [
+        "Valleyview",
+        36
+       ],
+       [
+        "Grande Cache",
+        33
+       ],
+       [
+        "High Prairie",
+        32
+       ],
+       [
+        "Seebe",
+        26
+       ],
+       [
+        "Athabasca/Lac La Biche",
+        25
+       ],
+       [
+        "Swan Hills",
+        22
+       ],
+       [
+        "Cold Lake",
+        21
+       ],
+       [
+        "Vegreville",
+        21
+       ],
+       [
+        "Caroline",
+        18
+       ],
+       [
+        "Wabamun",
+        18
+       ],
+       [
+        "Edmonton",
+        17
+       ],
+       [
+        "Fort Saskatchewan",
+        17
+       ],
+       [
+        "Wetaskiwin",
+        17
+       ],
+       [
+        "Calgary",
+        16
+       ],
+       [
+        "Airdrie",
+        15
+       ],
+       [
+        "Fort McMurray",
+        15
+       ],
+       [
+        "Fox Creek",
+        15
+       ],
+       [
+        "Lloydminster",
+        15
+       ],
+       [
+        "Abraham Lake",
+        13
+       ],
+       [
+        "Drayton Valley",
+        13
+       ],
+       [
+        "Red Deer",
+        13
+       ],
+       [
+        "High River",
+        12
+       ],
+       [
+        "Didsbury",
+        11
+       ],
+       [
+        "Strathmore/Blackie",
+        10
+       ],
+       [
+        "Hinton/Edson",
+        9
+       ],
+       [
+        "Lethbridge",
+        7
+       ],
+       [
+        "Wainwright",
+        7
+       ],
+       [
+        "Fort Macleod",
+        6
+       ],
+       [
+        "Glenwood",
+        6
+       ],
+       [
+        "Provost",
+        5
+       ],
+       [
+        "Stavely",
+        5
+       ],
+       [
+        "Empress",
+        3
+       ],
+       [
+        "Vauxhall",
+        3
+       ],
+       [
+        "Alliance/Battle River",
+        2
+       ],
+       [
+        "Brooks",
+        2
+       ],
+       [
+        "Hanna",
+        2
+       ],
+       [
+        "Medicine Hat",
+        2
+       ],
+       [
+        "Sheerness",
+        2
+       ]
+      ],
+      "row_count": 42,
+      "facts": "Query result (name, hours_at_cap): High Level, 60; Peace River, 47; Rainbow Lake, 44; Grande Prairie, 43; Valleyview, 36; Grande Cache, 33 [query_warehouse]."
+     }
+    },
+    {
+     "tool": "query_warehouse",
+     "arguments": {
+      "sql": "SELECT name, COUNT(*) AS hours_at_cap FROM v_hour WHERE lmp >= 1000 GROUP BY name ORDER BY hours_at_cap DESC, name LIMIT 36 OFFSET 6"
+     },
+     "result": {
+      "columns": [
+       "name",
+       "hours_at_cap"
+      ],
+      "rows": [
+       [
+        "High Prairie",
+        32
+       ],
+       [
+        "Seebe",
+        26
+       ],
+       [
+        "Athabasca/Lac La Biche",
+        25
+       ],
+       [
+        "Swan Hills",
+        22
+       ],
+       [
+        "Cold Lake",
+        21
+       ],
+       [
+        "Vegreville",
+        21
+       ],
+       [
+        "Caroline",
+        18
+       ],
+       [
+        "Wabamun",
+        18
+       ],
+       [
+        "Edmonton",
+        17
+       ],
+       [
+        "Fort Saskatchewan",
+        17
+       ],
+       [
+        "Wetaskiwin",
+        17
+       ],
+       [
+        "Calgary",
+        16
+       ],
+       [
+        "Airdrie",
+        15
+       ],
+       [
+        "Fort McMurray",
+        15
+       ],
+       [
+        "Fox Creek",
+        15
+       ],
+       [
+        "Lloydminster",
+        15
+       ],
+       [
+        "Abraham Lake",
+        13
+       ],
+       [
+        "Drayton Valley",
+        13
+       ],
+       [
+        "Red Deer",
+        13
+       ],
+       [
+        "High River",
+        12
+       ],
+       [
+        "Didsbury",
+        11
+       ],
+       [
+        "Strathmore/Blackie",
+        10
+       ],
+       [
+        "Hinton/Edson",
+        9
+       ],
+       [
+        "Lethbridge",
+        7
+       ],
+       [
+        "Wainwright",
+        7
+       ],
+       [
+        "Fort Macleod",
+        6
+       ],
+       [
+        "Glenwood",
+        6
+       ],
+       [
+        "Provost",
+        5
+       ],
+       [
+        "Stavely",
+        5
+       ],
+       [
+        "Empress",
+        3
+       ],
+       [
+        "Vauxhall",
+        3
+       ],
+       [
+        "Alliance/Battle River",
+        2
+       ],
+       [
+        "Brooks",
+        2
+       ],
+       [
+        "Hanna",
+        2
+       ],
+       [
+        "Medicine Hat",
+        2
+       ],
+       [
+        "Sheerness",
+        2
+       ]
+      ],
+      "row_count": 36,
+      "facts": "Query result (name, hours_at_cap): High Prairie, 32; Seebe, 26; Athabasca/Lac La Biche, 25; Swan Hills, 22; Cold Lake, 21; Vegreville, 21 [query_warehouse]."
+     }
+    },
+    {
+     "tool": "query_warehouse",
+     "arguments": {
+      "sql": "SELECT COUNT(*) AS areas, SUM(h) AS total_hours, MAX(h) AS max_h, MIN(h) AS min_h FROM (SELECT name, COUNT(*) h FROM v_hour WHERE lmp >= 1000 GROUP BY name) t"
+     },
+     "result": {
+      "columns": [
+       "areas",
+       "total_hours",
+       "max_h",
+       "min_h"
+      ],
+      "rows": [
+       [
+        42,
+        706.0,
+        60,
+        2
+       ]
+      ],
+      "row_count": 1,
+      "facts": "Query result (areas, total_hours, max_h, min_h): 42, 706.0, 60, 2 [query_warehouse]."
+     }
+    }
+   ],
+   "answer": "All 42 planning areas hit the $1,000/MWh cap at least once in 2025 \u2014 706 area-hours total [query_warehouse]. Hours per area: High Level 60; Peace River 47; Rainbow Lake 44; Grande Prairie 43; Valleyview 36; Grande Cache 33; High Prairie 32; Seebe 26; Athabasca/Lac La Biche 25; Swan Hills 22; Cold Lake 21; Vegreville 21; Caroline 18; Wabamun 18; Edmonton 17; Fort Saskatchewan 17; Wetaskiwin 17; Calgary 16; Airdrie 15; Fort McMurray 15; Fox Creek 15; Lloydminster 15; Abraham Lake 13; Drayton Valley 13; Red Deer 13; High River 12; Didsbury 11; Strathmore/Blackie 10; Hinton/Edson 9; Lethbridge 7; Wainwright 7; Fort Macleod 6; Glenwood 6; Provost 5; Stavely 5; Empress 3; Vauxhall 3; Alliance/Battle River 2; Brooks 2; Hanna 2; Medicine Hat 2; Sheerness 2 [query_warehouse].",
+   "answer_source": "model",
+   "mode": "local LLM (qwen/qwen3.8-27b)",
+   "question": "In the 2025 backcast, how many hours did each planning area reach the $1,000/MWh cap?",
+   "grounding": {
+    "numbers": 46,
+    "traced": 46,
+    "untraced": []
+   },
+   "seconds": 738.9
+  }
+ ]
+}

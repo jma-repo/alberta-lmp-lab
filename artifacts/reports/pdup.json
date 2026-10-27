@@ -1,0 +1,1374 @@
+{
+ "rules": {
+  "DATA-01": {
+   "title": "Required fields are present",
+   "category": "Data"
+  },
+  "DATA-02": {
+   "title": "Element names are unique",
+   "category": "Data"
+  },
+  "TOP-01": {
+   "title": "Every bus connects to the POI",
+   "category": "Topology"
+  },
+  "TOP-02": {
+   "title": "Branch voltages match bus voltages",
+   "category": "Topology"
+  },
+  "TOP-03": {
+   "title": "Collector system is grounded",
+   "category": "Topology"
+  },
+  "LINE-01": {
+   "title": "R and X per km fit the voltage class and construction",
+   "category": "Lines"
+  },
+  "LINE-02": {
+   "title": "B per km fits the voltage class and construction",
+   "category": "Lines"
+  },
+  "LINE-03": {
+   "title": "Surge impedance is plausible",
+   "category": "Lines"
+  },
+  "LINE-04": {
+   "title": "X/R is plausible (overhead lines)",
+   "category": "Lines"
+  },
+  "LINE-05": {
+   "title": "Seasonal ratings are present and ordered",
+   "category": "Lines"
+  },
+  "LINE-06": {
+   "title": "Rating covers the power the line carries",
+   "category": "Lines"
+  },
+  "XF-01": {
+   "title": "Impedance is plausible on the transformer's own base",
+   "category": "Transformers"
+  },
+  "XF-02": {
+   "title": "X/R is plausible",
+   "category": "Transformers"
+  },
+  "XF-03": {
+   "title": "Tap changer data are consistent",
+   "category": "Transformers"
+  },
+  "XF-04": {
+   "title": "Vector group is declared",
+   "category": "Transformers"
+  },
+  "GEN-01": {
+   "title": "MBASE and Pmax are consistent",
+   "category": "Generators"
+  },
+  "GEN-02": {
+   "title": "Total Pmax matches the plant capacity",
+   "category": "Generators"
+  },
+  "GEN-03": {
+   "title": "Reactive capability at the terminals",
+   "category": "Generators"
+  },
+  "DYN-01": {
+   "title": "Required dynamic models are present",
+   "category": "Dynamic models"
+  },
+  "DYN-02": {
+   "title": "Parameters are within screening ranges",
+   "category": "Dynamic models"
+  },
+  "DYN-03": {
+   "title": "Time constants are numerically safe",
+   "category": "Dynamic models"
+  },
+  "DYN-04": {
+   "title": "Current limit covers rated P with required Q",
+   "category": "Dynamic models"
+  },
+  "DYN-05": {
+   "title": "Frequency droop and deadband",
+   "category": "Dynamic models"
+  },
+  "DYN-06": {
+   "title": "Dynamic and static reactive limits agree",
+   "category": "Dynamic models"
+  },
+  "PF-01": {
+   "title": "AC power flow converges as submitted",
+   "category": "Power flow"
+  },
+  "PF-02": {
+   "title": "Reactive capability at the POI",
+   "category": "Power flow"
+  },
+  "PF-03": {
+   "title": "Voltages and loading within limits",
+   "category": "Power flow"
+  },
+  "SC-01": {
+   "title": "Short-circuit ratio at the POI",
+   "category": "Short circuit"
+  },
+  "SC-02": {
+   "title": "Collector fault level within switchgear rating",
+   "category": "Short circuit"
+  },
+  "ML-01": {
+   "title": "Parameters look like accepted models",
+   "category": "Anomaly detection"
+  }
+ },
+ "reviews": [
+  {
+   "project": {
+    "name": "Coulee Solar + Storage (synthetic)",
+    "id": "SYN-0002",
+    "technology": "solar",
+    "stage": 2,
+    "capacity_mw": 210,
+    "poi": "Substation 902S 138 kV (fictional)",
+    "submitted_by": "Example Solar Inc. (fictional)"
+   },
+   "outcome": "Accepted",
+   "errors": 0,
+   "warnings": 0,
+   "findings": [],
+   "checklist": [
+    {
+     "rule": "DATA-01",
+     "title": "Required fields are present",
+     "category": "Data",
+     "status": "pass"
+    },
+    {
+     "rule": "DATA-02",
+     "title": "Element names are unique",
+     "category": "Data",
+     "status": "pass"
+    },
+    {
+     "rule": "TOP-01",
+     "title": "Every bus connects to the POI",
+     "category": "Topology",
+     "status": "pass"
+    },
+    {
+     "rule": "TOP-02",
+     "title": "Branch voltages match bus voltages",
+     "category": "Topology",
+     "status": "pass"
+    },
+    {
+     "rule": "TOP-03",
+     "title": "Collector system is grounded",
+     "category": "Topology",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-01",
+     "title": "R and X per km fit the voltage class and construction",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-02",
+     "title": "B per km fits the voltage class and construction",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-03",
+     "title": "Surge impedance is plausible",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-04",
+     "title": "X/R is plausible (overhead lines)",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-05",
+     "title": "Seasonal ratings are present and ordered",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-06",
+     "title": "Rating covers the power the line carries",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "XF-01",
+     "title": "Impedance is plausible on the transformer's own base",
+     "category": "Transformers",
+     "status": "pass"
+    },
+    {
+     "rule": "XF-02",
+     "title": "X/R is plausible",
+     "category": "Transformers",
+     "status": "pass"
+    },
+    {
+     "rule": "XF-03",
+     "title": "Tap changer data are consistent",
+     "category": "Transformers",
+     "status": "pass"
+    },
+    {
+     "rule": "XF-04",
+     "title": "Vector group is declared",
+     "category": "Transformers",
+     "status": "pass"
+    },
+    {
+     "rule": "GEN-01",
+     "title": "MBASE and Pmax are consistent",
+     "category": "Generators",
+     "status": "pass"
+    },
+    {
+     "rule": "GEN-02",
+     "title": "Total Pmax matches the plant capacity",
+     "category": "Generators",
+     "status": "pass"
+    },
+    {
+     "rule": "GEN-03",
+     "title": "Reactive capability at the terminals",
+     "category": "Generators",
+     "status": "pass"
+    },
+    {
+     "rule": "DYN-01",
+     "title": "Required dynamic models are present",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "DYN-02",
+     "title": "Parameters are within screening ranges",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "DYN-03",
+     "title": "Time constants are numerically safe",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "DYN-04",
+     "title": "Current limit covers rated P with required Q",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "DYN-05",
+     "title": "Frequency droop and deadband",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "DYN-06",
+     "title": "Dynamic and static reactive limits agree",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "PF-01",
+     "title": "AC power flow converges as submitted",
+     "category": "Power flow",
+     "status": "pass"
+    },
+    {
+     "rule": "PF-02",
+     "title": "Reactive capability at the POI",
+     "category": "Power flow",
+     "status": "pass"
+    },
+    {
+     "rule": "PF-03",
+     "title": "Voltages and loading within limits",
+     "category": "Power flow",
+     "status": "pass"
+    },
+    {
+     "rule": "SC-01",
+     "title": "Short-circuit ratio at the POI",
+     "category": "Short circuit",
+     "status": "pass"
+    },
+    {
+     "rule": "SC-02",
+     "title": "Collector fault level within switchgear rating",
+     "category": "Short circuit",
+     "status": "pass"
+    },
+    {
+     "rule": "ML-01",
+     "title": "Parameters look like accepted models",
+     "category": "Anomaly detection",
+     "status": "pass"
+    }
+   ],
+   "power_flow": {
+    "as_submitted": {
+     "converged": true,
+     "p_poi_mw": 204.6,
+     "q_poi_mvar": -33.76,
+     "losses_mw": 5.4,
+     "voltages": {
+      "POI": 1.0,
+      "HV": 1.0034,
+      "MV": 0.9979,
+      "F1": 1.0085,
+      "F2": 1.002,
+      "G1": 1.0135,
+      "G2": 1.007
+     },
+     "line_loading": {
+      "Gen-tie": 72.3,
+      "PV collector": 74.0,
+      "BESS collector": 74.5
+     },
+     "trafo_loading": {
+      "Main transformer": 90.2,
+      "PV inverter transformers": 84.1,
+      "BESS inverter transformers": 85.1
+     },
+     "tap_position": 0
+    },
+    "fixes_tested": [],
+    "case": "as submitted",
+    "unity": {
+     "converged": true,
+     "p_poi_mw": 204.6,
+     "q_poi_mvar": -33.76,
+     "losses_mw": 5.4,
+     "voltages": {
+      "POI": 1.0,
+      "HV": 1.0034,
+      "MV": 0.9979,
+      "F1": 1.0085,
+      "F2": 1.002,
+      "G1": 1.0135,
+      "G2": 1.007
+     },
+     "line_loading": {
+      "Gen-tie": 72.3,
+      "PV collector": 74.0,
+      "BESS collector": 74.5
+     },
+     "trafo_loading": {
+      "Main transformer": 90.2,
+      "PV inverter transformers": 84.1,
+      "BESS inverter transformers": 85.1
+     },
+     "tap_position": 0
+    },
+    "export": {
+     "converged": true,
+     "p_poi_mw": 203.52,
+     "q_poi_mvar": 82.11,
+     "losses_mw": 6.48,
+     "voltages": {
+      "POI": 1.0,
+      "HV": 1.0196,
+      "MV": 1.0095,
+      "F1": 1.0305,
+      "F2": 1.0177,
+      "G1": 1.0635,
+      "G2": 1.0518
+     },
+     "line_loading": {
+      "Gen-tie": 76.5,
+      "PV collector": 82.5,
+      "BESS collector": 83.3
+     },
+     "trafo_loading": {
+      "Main transformer": 100.7,
+      "PV inverter transformers": 92.9,
+      "BESS inverter transformers": 95.0
+     },
+     "tap_position": 9
+    },
+    "absorb": {
+     "converged": true,
+     "p_poi_mw": 201.77,
+     "q_poi_mvar": -176.22,
+     "losses_mw": 8.23,
+     "voltages": {
+      "POI": 1.0,
+      "HV": 0.9832,
+      "MV": 0.9964,
+      "F1": 0.9954,
+      "F2": 0.9959,
+      "G1": 0.9696,
+      "G2": 0.9693
+     },
+     "line_loading": {
+      "Gen-tie": 93.4,
+      "PV collector": 89.7,
+      "BESS collector": 90.2
+     },
+     "trafo_loading": {
+      "Main transformer": 116.6,
+      "PV inverter transformers": 101.9,
+      "BESS inverter transformers": 103.1
+     },
+     "tap_position": -11
+    },
+    "requirement_mvar": 67.2,
+    "export_margin_mvar": 14.9,
+    "absorb_margin_mvar": 109.0,
+    "required_points": {
+     "unity": {
+      "converged": true,
+      "p_poi_mw": 204.6,
+      "q_poi_mvar": -33.76,
+      "losses_mw": 5.4,
+      "voltages": {
+       "POI": 1.0,
+       "HV": 1.0034,
+       "MV": 0.9979,
+       "F1": 1.0085,
+       "F2": 1.002,
+       "G1": 1.0135,
+       "G2": 1.007
+      },
+      "line_loading": {
+       "Gen-tie": 72.3,
+       "PV collector": 74.0,
+       "BESS collector": 74.5
+      },
+      "trafo_loading": {
+       "Main transformer": 90.2,
+       "PV inverter transformers": 84.1,
+       "BESS inverter transformers": 85.1
+      },
+      "tap_position": 0
+     },
+     "export": {
+      "converged": true,
+      "p_poi_mw": 203.84,
+      "q_poi_mvar": 67.49,
+      "losses_mw": 6.16,
+      "voltages": {
+       "POI": 1.0,
+       "HV": 1.0176,
+       "MV": 1.0068,
+       "F1": 1.0264,
+       "F2": 1.0144,
+       "G1": 1.0558,
+       "G2": 1.0448
+      },
+      "line_loading": {
+       "Gen-tie": 74.8,
+       "PV collector": 80.3,
+       "BESS collector": 80.9
+      },
+      "trafo_loading": {
+       "Main transformer": 98.0,
+       "PV inverter transformers": 90.5,
+       "BESS inverter transformers": 92.4
+      },
+      "tap_position": 8,
+      "share_of_capability": 0.863
+     },
+     "absorb": {
+      "converged": true,
+      "p_poi_mw": 204.27,
+      "q_poi_mvar": -67.38,
+      "losses_mw": 5.73,
+      "voltages": {
+       "POI": 1.0,
+       "HV": 0.9986,
+       "MV": 0.9923,
+       "F1": 1.0001,
+       "F2": 0.9953,
+       "G1": 0.9975,
+       "G2": 0.9925
+      },
+      "line_loading": {
+       "Gen-tie": 75.0,
+       "PV collector": 76.0,
+       "BESS collector": 76.4
+      },
+      "trafo_loading": {
+       "Main transformer": 93.6,
+       "PV inverter transformers": 86.4,
+       "BESS inverter transformers": 87.4
+      },
+      "tap_position": -2,
+      "share_of_capability": 0.254
+     }
+    }
+   },
+   "short_circuit": {
+    "scr": 11.43,
+    "system_mva": 2400,
+    "collector_fault_ka": 23.16,
+    "switchgear_ka": 31.5
+   },
+   "sensitivity": {
+    "metric": "POI reactive export margin (Mvar)",
+    "base": 15.2,
+    "rows": [
+     {
+      "parameter": "Inverter reactive limit",
+      "range": "-10% / +10%",
+      "low": 4.6,
+      "high": 25.6
+     },
+     {
+      "parameter": "Main transformer impedance",
+      "range": "-20% / +20%",
+      "low": 19.4,
+      "high": 10.6
+     },
+     {
+      "parameter": "Generator transformer impedance",
+      "range": "-20% / +20%",
+      "low": 16.9,
+      "high": 13.2
+     },
+     {
+      "parameter": "POI voltage",
+      "range": "0.95 / 1.05 p.u.",
+      "low": 14.5,
+      "high": 16.3
+     },
+     {
+      "parameter": "Collector reactance",
+      "range": "-20% / +20%",
+      "low": 15.9,
+      "high": 14.5
+     }
+    ]
+   },
+   "anomaly": {
+    "lines": [
+     {
+      "element": "Gen-tie",
+      "group": "138 kV overhead",
+      "score": -0.401,
+      "threshold": -0.611,
+      "share_of_accepted_more_unusual": 0.977,
+      "robust_z": {
+       "r": -0.1,
+       "x": -0.5,
+       "b": 0.6
+      },
+      "per_km": {
+       "r": 0.12,
+       "x": 0.4501,
+       "b": 3.1996
+      },
+      "flagged": false
+     },
+     {
+      "element": "PV collector",
+      "group": "34.5 kV cable",
+      "score": -0.504,
+      "threshold": -0.608,
+      "share_of_accepted_more_unusual": 0.182,
+      "robust_z": {
+       "r": -1.0,
+       "x": -0.9,
+       "b": 0.2
+      },
+      "per_km": {
+       "r": 0.074,
+       "x": 0.12,
+       "b": 132.0059
+      },
+      "flagged": false
+     },
+     {
+      "element": "BESS collector",
+      "group": "34.5 kV cable",
+      "score": -0.504,
+      "threshold": -0.608,
+      "share_of_accepted_more_unusual": 0.18,
+      "robust_z": {
+       "r": -1.0,
+       "x": -0.9,
+       "b": 0.2
+      },
+      "per_km": {
+       "r": 0.074,
+       "x": 0.12,
+       "b": 131.9751
+      },
+      "flagged": false
+     }
+    ],
+    "library": "synthetic, 600 accepted models per group"
+   },
+   "summary": "Review of Coulee Solar + Storage (synthetic) is complete.  \nThe model review outcome is accepted.  \nNo findings were identified.  \nEvery rule passed.",
+   "summary_source": "local LLM",
+   "letter": "# PDUP model review: Coulee Solar + Storage (synthetic)\n\nSYN-0002 \u00b7 Stage 2 \u00b7 210 MW solar \u00b7 POI Substation 902S 138 kV (fictional)\n\n**Outcome: Accepted** (0 deficiencies, 0 clarifications)\n\n## Summary\n\nReview of Coulee Solar + Storage (synthetic) is complete.  \nThe model review outcome is accepted.  \nNo findings were identified.  \nEvery rule passed.\n\n_Summary drafted by: local LLM; findings below are rule-based._\n\n## Study results\n\n- Reactive capability at the POI: +82.1 / -176.2 Mvar at 204.6 MW against +/-67.2 Mvar required.\n- Short-circuit ratio at the POI: 11.4; collector fault level 23.2 kA (switchgear 31.5 kA).\n- Most sensitive input for the POI reactive margin: Inverter reactive limit (-10% / +10%: +4.6 to +25.6 Mvar).\n\n_Synthetic project and data, produced by an automated first-pass review; engineering judgement and AESO's PDUP checklist govern._\n"
+  },
+  {
+   "project": {
+    "name": "Prairie Ridge Wind (synthetic)",
+    "id": "SYN-0001",
+    "technology": "wind",
+    "stage": 2,
+    "capacity_mw": 200,
+    "poi": "Substation 901S 240 kV (fictional)",
+    "submitted_by": "Example Wind LP (fictional)"
+   },
+   "outcome": "Resubmission required",
+   "errors": 10,
+   "warnings": 5,
+   "findings": [
+    {
+     "rule": "PF-01",
+     "severity": "error",
+     "element": "Prairie Ridge Wind (synthetic)",
+     "message": "The AC power flow does not reach a valid solution at full output with the data as submitted. It solves to a valid operating point once GSU 2 kv_lv is set to 0.69.",
+     "action": "Correct the model so the case solves from a flat start.",
+     "impact": "No steady-state, short-circuit or dynamic study can be run on this case.",
+     "evidence": {
+      "solver_errors": [
+       "implausible solution: G2 at 516 p.u."
+      ],
+      "restoring_fixes": [
+       {
+        "kind": "transformer",
+        "name": "GSU 2",
+        "field": "kv_lv",
+        "value": 0.69
+       }
+      ]
+     },
+     "probable_cause": "Root cause isolated by re-solving with each suspected correction on its own.",
+     "fix": null
+    },
+    {
+     "rule": "PF-02",
+     "severity": "error",
+     "element": "Prairie Ridge Wind (synthetic)",
+     "message": "At 197 MW the plant delivers +23 / -104 Mvar at the POI; 0.95 power factor needs +/-65 Mvar.",
+     "action": "Add reactive capability (inverter MVA, capacitor or STATCOM) or justify the shortfall.",
+     "impact": "The facility would not meet the reactive power requirement at the POI.",
+     "evidence": {
+      "p_mw": 196.97,
+      "export_mvar": 23.05,
+      "absorb_mvar": 103.7,
+      "required_mvar": 64.7
+     },
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "TOP-02",
+     "severity": "error",
+     "element": "GSU 2",
+     "message": "LV winding is 690 kV but bus G2 is 0.69 kV.",
+     "action": "Correct the winding or bus voltage.",
+     "impact": "An off-nominal ratio of this size distorts every voltage in the plant.",
+     "evidence": {
+      "winding_kv": 690.0,
+      "bus_kv": 0.69
+     },
+     "probable_cause": "The winding voltage looks like it was entered in volts: 690 -> 0.69 kV.",
+     "fix": {
+      "kind": "transformer",
+      "name": "GSU 2",
+      "field": "kv_lv",
+      "value": 0.69
+     }
+    },
+    {
+     "rule": "XF-01",
+     "severity": "error",
+     "element": "Main transformer",
+     "message": "Impedance 5.56% on 180 MVA is outside 6-15% for a main transformer.",
+     "action": "Confirm the test-report impedance and the MVA base it is stated on.",
+     "impact": "Transformer impedance drives voltage regulation, reactive losses and fault levels.",
+     "evidence": {
+      "z_pct": 5.56,
+      "mva": 180,
+      "range": [
+       6.0,
+       15.0
+      ]
+     },
+     "probable_cause": "The value looks like it is on the 100 MVA system base: 5.56% x 180/100 = 10.0% on the transformer's own base, which is typical.",
+     "fix": {
+      "kind": "transformer",
+      "name": "Main transformer",
+      "field": "z_pct",
+      "value": 10.008
+     }
+    },
+    {
+     "rule": "LINE-01",
+     "severity": "error",
+     "element": "Collector 2",
+     "message": "X = 1.428 ohm/km, outside 0.08-0.25 ohm/km for 34.5 kV cable.",
+     "action": "Confirm X for the conductor and length, in p.u. on 100 MVA.",
+     "impact": "Power flow, short-circuit and stability results depend directly on this impedance.",
+     "evidence": {
+      "value": 1.4283,
+      "range": [
+       0.08,
+       0.25
+      ],
+      "x_pu": 1.08
+     },
+     "probable_cause": "Likely ohms typed into the p.u. field: read that way it is 0.120 ohm/km, a normal value (0.09074 p.u. on the study base).",
+     "fix": {
+      "kind": "line",
+      "name": "Collector 2",
+      "field": "x_pu",
+      "value": 0.090737
+     }
+    },
+    {
+     "rule": "DYN-04",
+     "severity": "error",
+     "element": "WTG group 1 REECA1, WTG group 2 REECA1",
+     "message": "Imax = 0.9 p.u. cannot carry rated P (0.900) with the required Q (0.297): needs 0.948.",
+     "action": "Raise Imax to the converter's current rating or justify the limit.",
+     "impact": "The model would cut active or reactive current at full output, misstating fault ride-through.",
+     "evidence": {
+      "Imax": 0.9,
+      "needed": 0.948
+     },
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "DYN-05",
+     "severity": "error",
+     "element": "WTG group 1 REPCA1, WTG group 2 REPCA1",
+     "message": "Ddn = 5 gives a 20% droop, outside 2-5%.",
+     "action": "Set the droop to the plant's frequency-response setting (for 5%, Ddn = 20).",
+     "impact": "Over-frequency response would be too weak in frequency studies.",
+     "evidence": {
+      "Ddn": 5,
+      "droop_pct": 20.0
+     },
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "TOP-03",
+     "severity": "error",
+     "element": "Main transformer",
+     "message": "The YNd1 main transformer has a delta low-voltage winding and no grounding transformer is modelled on MV.",
+     "action": "Add the collector grounding transformer (impedance and connection) or confirm the grounding method.",
+     "impact": "Without a ground source the collector is ungrounded: ground-fault currents, overvoltages and protection studies are wrong.",
+     "evidence": {
+      "vector_group": "YNd1",
+      "bus": "MV"
+     },
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "LINE-05",
+     "severity": "error",
+     "element": "Gen-tie",
+     "message": "Winter rating 400 MVA is below the summer rating 450 MVA; cooler winter air should allow more.",
+     "action": "Confirm the seasonal ratings.",
+     "impact": "Summer studies would use an optimistic limit.",
+     "evidence": {
+      "summer": 450,
+      "winter": 400
+     },
+     "probable_cause": "The summer and winter values appear to be swapped.",
+     "fix": {
+      "kind": "line",
+      "name": "Gen-tie",
+      "field": "rating_mva",
+      "value": {
+       "summer": 400,
+       "winter": 450
+      }
+     }
+    },
+    {
+     "rule": "TOP-01",
+     "severity": "error",
+     "element": "COL3",
+     "message": "Bus COL3 (34.5 kV) is not connected to the POI.",
+     "action": "Connect the bus or remove it from the case.",
+     "impact": "An islanded bus is dropped from the study and hides missing equipment.",
+     "evidence": {},
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "GEN-03",
+     "severity": "warning",
+     "element": "WTG group 1, WTG group 2",
+     "message": "Reactive range -30 to 30 Mvar is below +/-33 Mvar (0.33 x Pmax) at the terminals.",
+     "action": "Provide the capability curve at full output.",
+     "impact": "The plant may not meet the power-factor requirement at the POI (see PF-02).",
+     "evidence": {
+      "qmax": 30,
+      "qmin": -30,
+      "needed": 33.3
+     },
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "DYN-03",
+     "severity": "warning",
+     "element": "WTG group 1 REGCA1, WTG group 2 REGCA1",
+     "message": "Tg = 0.005 s is shorter than 4 integration steps (0.0167 s).",
+     "action": "Set Tg to 0 to bypass it, or to at least 0.017 s.",
+     "impact": "Time constants below a few steps make the simulation numerically unstable or step-size dependent.",
+     "evidence": {
+      "value": 0.005,
+      "minimum": 0.0167
+     },
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "PF-03",
+     "severity": "warning",
+     "element": "Prairie Ridge Wind (synthetic)",
+     "message": "At the required operating points: Main transformer loaded 112% (export), Main transformer loaded 112% (unity), Main transformer loaded 116% (absorb).",
+     "action": "Review voltage control settings and equipment ratings.",
+     "impact": "Equipment would operate outside its ratings while meeting the requirement.",
+     "evidence": {},
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "SC-01",
+     "severity": "warning",
+     "element": "Prairie Ridge Wind (synthetic)",
+     "message": "Short-circuit ratio 2.8 (560 MVA / 200 MW) is below 3: a weak connection point.",
+     "action": "Provide a validated EMT (PSCAD) model; an EMT study will be required.",
+     "impact": "Phasor-domain (PSS/E) models can miss control instability at low system strength.",
+     "evidence": {
+      "scr": 2.8
+     },
+     "probable_cause": null,
+     "fix": null
+    },
+    {
+     "rule": "ML-01",
+     "severity": "warning",
+     "element": "Collector 1",
+     "message": "Each value passes its range check, but the combination is more unusual than every one of the 600 accepted 34.5 kV cable models: X high (+3.5 robust sd), R low (-3.0 robust sd), B low (-2.8 robust sd).",
+     "action": "Confirm the conductor and cable data sheet values together.",
+     "impact": "A plausible-looking but wrong impedance passes every single-value check and skews every study.",
+     "evidence": {
+      "score": -0.746,
+      "threshold": -0.608,
+      "robust_z": {
+       "log_r": -3.0,
+       "log_x": 3.5,
+       "log_b": -2.8
+      }
+     },
+     "probable_cause": null,
+     "fix": null
+    }
+   ],
+   "checklist": [
+    {
+     "rule": "DATA-01",
+     "title": "Required fields are present",
+     "category": "Data",
+     "status": "pass"
+    },
+    {
+     "rule": "DATA-02",
+     "title": "Element names are unique",
+     "category": "Data",
+     "status": "pass"
+    },
+    {
+     "rule": "TOP-01",
+     "title": "Every bus connects to the POI",
+     "category": "Topology",
+     "status": "fail"
+    },
+    {
+     "rule": "TOP-02",
+     "title": "Branch voltages match bus voltages",
+     "category": "Topology",
+     "status": "fail"
+    },
+    {
+     "rule": "TOP-03",
+     "title": "Collector system is grounded",
+     "category": "Topology",
+     "status": "fail"
+    },
+    {
+     "rule": "LINE-01",
+     "title": "R and X per km fit the voltage class and construction",
+     "category": "Lines",
+     "status": "fail"
+    },
+    {
+     "rule": "LINE-02",
+     "title": "B per km fits the voltage class and construction",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-03",
+     "title": "Surge impedance is plausible",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-04",
+     "title": "X/R is plausible (overhead lines)",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "LINE-05",
+     "title": "Seasonal ratings are present and ordered",
+     "category": "Lines",
+     "status": "fail"
+    },
+    {
+     "rule": "LINE-06",
+     "title": "Rating covers the power the line carries",
+     "category": "Lines",
+     "status": "pass"
+    },
+    {
+     "rule": "XF-01",
+     "title": "Impedance is plausible on the transformer's own base",
+     "category": "Transformers",
+     "status": "fail"
+    },
+    {
+     "rule": "XF-02",
+     "title": "X/R is plausible",
+     "category": "Transformers",
+     "status": "pass"
+    },
+    {
+     "rule": "XF-03",
+     "title": "Tap changer data are consistent",
+     "category": "Transformers",
+     "status": "pass"
+    },
+    {
+     "rule": "XF-04",
+     "title": "Vector group is declared",
+     "category": "Transformers",
+     "status": "pass"
+    },
+    {
+     "rule": "GEN-01",
+     "title": "MBASE and Pmax are consistent",
+     "category": "Generators",
+     "status": "pass"
+    },
+    {
+     "rule": "GEN-02",
+     "title": "Total Pmax matches the plant capacity",
+     "category": "Generators",
+     "status": "pass"
+    },
+    {
+     "rule": "GEN-03",
+     "title": "Reactive capability at the terminals",
+     "category": "Generators",
+     "status": "review"
+    },
+    {
+     "rule": "DYN-01",
+     "title": "Required dynamic models are present",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "DYN-02",
+     "title": "Parameters are within screening ranges",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "DYN-03",
+     "title": "Time constants are numerically safe",
+     "category": "Dynamic models",
+     "status": "review"
+    },
+    {
+     "rule": "DYN-04",
+     "title": "Current limit covers rated P with required Q",
+     "category": "Dynamic models",
+     "status": "fail"
+    },
+    {
+     "rule": "DYN-05",
+     "title": "Frequency droop and deadband",
+     "category": "Dynamic models",
+     "status": "fail"
+    },
+    {
+     "rule": "DYN-06",
+     "title": "Dynamic and static reactive limits agree",
+     "category": "Dynamic models",
+     "status": "pass"
+    },
+    {
+     "rule": "PF-01",
+     "title": "AC power flow converges as submitted",
+     "category": "Power flow",
+     "status": "fail"
+    },
+    {
+     "rule": "PF-02",
+     "title": "Reactive capability at the POI",
+     "category": "Power flow",
+     "status": "fail"
+    },
+    {
+     "rule": "PF-03",
+     "title": "Voltages and loading within limits",
+     "category": "Power flow",
+     "status": "review"
+    },
+    {
+     "rule": "SC-01",
+     "title": "Short-circuit ratio at the POI",
+     "category": "Short circuit",
+     "status": "review"
+    },
+    {
+     "rule": "SC-02",
+     "title": "Collector fault level within switchgear rating",
+     "category": "Short circuit",
+     "status": "pass"
+    },
+    {
+     "rule": "ML-01",
+     "title": "Parameters look like accepted models",
+     "category": "Anomaly detection",
+     "status": "review"
+    }
+   ],
+   "power_flow": {
+    "as_submitted": {
+     "converged": false,
+     "errors": [
+      "implausible solution: G2 at 516 p.u."
+     ]
+    },
+    "fixes_tested": [
+     {
+      "fix": {
+       "kind": "transformer",
+       "name": "GSU 2",
+       "field": "kv_lv",
+       "value": 0.69
+      },
+      "converged": true
+     },
+     {
+      "fix": {
+       "kind": "line",
+       "name": "Collector 2",
+       "field": "x_pu",
+       "value": 0.090737
+      },
+      "converged": false
+     },
+     {
+      "fix": {
+       "kind": "transformer",
+       "name": "Main transformer",
+       "field": "z_pct",
+       "value": 10.008
+      },
+      "converged": false
+     }
+    ],
+    "case": "with the probable corrections applied (provisional)",
+    "unity": {
+     "converged": true,
+     "p_poi_mw": 196.97,
+     "q_poi_mvar": -36.64,
+     "losses_mw": 4.63,
+     "voltages": {
+      "POI": 1.0,
+      "HV": 0.9989,
+      "MV": 0.9945,
+      "F1": 0.9955,
+      "F2": 1.0116,
+      "G1": 1.0008,
+      "G2": 1.0168
+     },
+     "line_loading": {
+      "Gen-tie": 50.2,
+      "Collector 1": 83.9,
+      "Collector 2": 82.6
+     },
+     "trafo_loading": {
+      "Main transformer": 111.5,
+      "GSU 1": 89.9,
+      "GSU 2": 88.5
+     },
+     "tap_position": -1
+    },
+    "export": {
+     "converged": true,
+     "p_poi_mw": 196.91,
+     "q_poi_mvar": 23.05,
+     "losses_mw": 4.69,
+     "voltages": {
+      "POI": 1.0,
+      "HV": 1.0041,
+      "MV": 1.0083,
+      "F1": 1.0252,
+      "F2": 1.034,
+      "G1": 1.0457,
+      "G2": 1.0543
+     },
+     "line_loading": {
+      "Gen-tie": 49.6,
+      "Collector 1": 84.1,
+      "Collector 2": 84.0
+     },
+     "trafo_loading": {
+      "Main transformer": 112.1,
+      "GSU 1": 89.8,
+      "GSU 2": 89.1
+     },
+     "tap_position": 3
+    },
+    "absorb": {
+     "converged": true,
+     "p_poi_mw": 196.25,
+     "q_poi_mvar": -103.7,
+     "losses_mw": 5.35,
+     "voltages": {
+      "POI": 1.0,
+      "HV": 0.993,
+      "MV": 0.9926,
+      "F1": 0.9764,
+      "F2": 1.0003,
+      "G1": 0.9652,
+      "G2": 0.9894
+     },
+     "line_loading": {
+      "Gen-tie": 55.7,
+      "Collector 1": 90.8,
+      "Collector 2": 88.6
+     },
+     "trafo_loading": {
+      "Main transformer": 123.8,
+      "GSU 1": 97.3,
+      "GSU 2": 94.9
+     },
+     "tap_position": -7
+    },
+    "requirement_mvar": 64.7,
+    "export_margin_mvar": -41.7,
+    "absorb_margin_mvar": 39.0,
+    "required_points": {
+     "unity": {
+      "converged": true,
+      "p_poi_mw": 196.97,
+      "q_poi_mvar": -36.64,
+      "losses_mw": 4.63,
+      "voltages": {
+       "POI": 1.0,
+       "HV": 0.9989,
+       "MV": 0.9945,
+       "F1": 0.9955,
+       "F2": 1.0116,
+       "G1": 1.0008,
+       "G2": 1.0168
+      },
+      "line_loading": {
+       "Gen-tie": 50.2,
+       "Collector 1": 83.9,
+       "Collector 2": 82.6
+      },
+      "trafo_loading": {
+       "Main transformer": 111.5,
+       "GSU 1": 89.9,
+       "GSU 2": 88.5
+      },
+      "tap_position": -1
+     },
+     "export": {
+      "converged": true,
+      "p_poi_mw": 196.91,
+      "q_poi_mvar": 23.05,
+      "losses_mw": 4.69,
+      "voltages": {
+       "POI": 1.0,
+       "HV": 1.0041,
+       "MV": 1.0083,
+       "F1": 1.0252,
+       "F2": 1.034,
+       "G1": 1.0457,
+       "G2": 1.0543
+      },
+      "line_loading": {
+       "Gen-tie": 49.6,
+       "Collector 1": 84.1,
+       "Collector 2": 84.0
+      },
+      "trafo_loading": {
+       "Main transformer": 112.1,
+       "GSU 1": 89.8,
+       "GSU 2": 89.1
+      },
+      "tap_position": 3,
+      "share_of_capability": 1.0
+     },
+     "absorb": {
+      "converged": true,
+      "p_poi_mw": 196.79,
+      "q_poi_mvar": -64.84,
+      "losses_mw": 4.81,
+      "voltages": {
+       "POI": 1.0,
+       "HV": 0.9964,
+       "MV": 0.9962,
+       "F1": 0.9899,
+       "F2": 1.0093,
+       "G1": 0.988,
+       "G2": 1.0075
+      },
+      "line_loading": {
+       "Gen-tie": 52.0,
+       "Collector 1": 85.8,
+       "Collector 2": 84.1
+      },
+      "trafo_loading": {
+       "Main transformer": 115.5,
+       "GSU 1": 91.9,
+       "GSU 2": 90.1
+      },
+      "tap_position": -4,
+      "share_of_capability": 0.441
+     }
+    }
+   },
+   "short_circuit": {
+    "scr": 2.8,
+    "system_mva": 560,
+    "collector_fault_ka": 11.58,
+    "switchgear_ka": 25
+   },
+   "sensitivity": {
+    "metric": "POI reactive export margin (Mvar)",
+    "base": -41.7,
+    "rows": [
+     {
+      "parameter": "Inverter reactive limit",
+      "range": "-10% / +10%",
+      "low": -47.5,
+      "high": -36.4
+     },
+     {
+      "parameter": "Main transformer impedance",
+      "range": "-20% / +20%",
+      "low": -37.5,
+      "high": -46.5
+     },
+     {
+      "parameter": "Generator transformer impedance",
+      "range": "-20% / +20%",
+      "low": -39.8,
+      "high": -43.5
+     },
+     {
+      "parameter": "Collector reactance",
+      "range": "-20% / +20%",
+      "low": -40.0,
+      "high": -43.3
+     },
+     {
+      "parameter": "POI voltage",
+      "range": "0.95 / 1.05 p.u.",
+      "low": -43.4,
+      "high": -41.1
+     }
+    ]
+   },
+   "anomaly": {
+    "lines": [
+     {
+      "element": "Gen-tie",
+      "group": "240 kV overhead",
+      "score": -0.474,
+      "threshold": -0.598,
+      "share_of_accepted_more_unusual": 0.373,
+      "robust_z": {
+       "r": -0.5,
+       "x": -0.5,
+       "b": -1.1
+      },
+      "per_km": {
+       "r": 0.0499,
+       "x": 0.42,
+       "b": 2.9948
+      },
+      "flagged": false
+     },
+     {
+      "element": "Collector 1",
+      "group": "34.5 kV cable",
+      "score": -0.746,
+      "threshold": -0.608,
+      "share_of_accepted_more_unusual": 0.0,
+      "robust_z": {
+       "r": -3.0,
+       "x": 3.5,
+       "b": -2.8
+      },
+      "per_km": {
+       "r": 0.022,
+       "x": 0.24,
+       "b": 59.9664
+      },
+      "flagged": true
+     },
+     {
+      "element": "Collector 2",
+      "group": "34.5 kV cable",
+      "score": -0.626,
+      "threshold": -0.608,
+      "share_of_accepted_more_unusual": 0.007,
+      "robust_z": {
+       "r": -1.0,
+       "x": 14.7,
+       "b": 0.2
+      },
+      "per_km": {
+       "r": 0.0741,
+       "x": 1.4283,
+       "b": 131.9984
+      },
+      "flagged": true
+     }
+    ],
+    "library": "synthetic, 600 accepted models per group"
+   },
+   "summary": "The review found that the submitted model does not reach a valid full-output power flow solution. It also identified errors in topology, transformer and line parameters, dynamic settings, and reactive capability. The model shows reactive capability shortfalls and main transformer loading above the rated level at the operating points. Resubmission is required.",
+   "summary_source": "local LLM",
+   "letter": "# PDUP model review: Prairie Ridge Wind (synthetic)\n\nSYN-0001 \u00b7 Stage 2 \u00b7 200 MW wind \u00b7 POI Substation 901S 240 kV (fictional)\n\n**Outcome: Resubmission required** (10 deficiencies, 5 clarifications)\n\n## Summary\n\nThe review found that the submitted model does not reach a valid full-output power flow solution. It also identified errors in topology, transformer and line parameters, dynamic settings, and reactive capability. The model shows reactive capability shortfalls and main transformer loading above the rated level at the operating points. Resubmission is required.\n\n_Summary drafted by: local LLM; findings below are rule-based._\n\n## Deficiencies (must be corrected)\n\n| # | Rule | Element | Finding | Required action |\n|---|---|---|---|---|\n| 1 | PF-01 | Prairie Ridge Wind (synthetic) | The AC power flow does not reach a valid solution at full output with the data as submitted. It solves to a valid operating point once GSU 2 kv_lv is set to 0.69. *Root cause isolated by re-solving with each suspected correction on its own.* | Correct the model so the case solves from a flat start. |\n| 2 | PF-02 | Prairie Ridge Wind (synthetic) | At 197 MW the plant delivers +23 / -104 Mvar at the POI; 0.95 power factor needs +/-65 Mvar. | Add reactive capability (inverter MVA, capacitor or STATCOM) or justify the shortfall. |\n| 3 | TOP-02 | GSU 2 | LV winding is 690 kV but bus G2 is 0.69 kV. *The winding voltage looks like it was entered in volts: 690 -> 0.69 kV.* | Correct the winding or bus voltage. |\n| 4 | XF-01 | Main transformer | Impedance 5.56% on 180 MVA is outside 6-15% for a main transformer. *The value looks like it is on the 100 MVA system base: 5.56% x 180/100 = 10.0% on the transformer's own base, which is typical.* | Confirm the test-report impedance and the MVA base it is stated on. |\n| 5 | LINE-01 | Collector 2 | X = 1.428 ohm/km, outside 0.08-0.25 ohm/km for 34.5 kV cable. *Likely ohms typed into the p.u. field: read that way it is 0.120 ohm/km, a normal value (0.09074 p.u. on the study base).* | Confirm X for the conductor and length, in p.u. on 100 MVA. |\n| 6 | DYN-04 | WTG group 1 REECA1, WTG group 2 REECA1 | Imax = 0.9 p.u. cannot carry rated P (0.900) with the required Q (0.297): needs 0.948. | Raise Imax to the converter's current rating or justify the limit. |\n| 7 | DYN-05 | WTG group 1 REPCA1, WTG group 2 REPCA1 | Ddn = 5 gives a 20% droop, outside 2-5%. | Set the droop to the plant's frequency-response setting (for 5%, Ddn = 20). |\n| 8 | TOP-03 | Main transformer | The YNd1 main transformer has a delta low-voltage winding and no grounding transformer is modelled on MV. | Add the collector grounding transformer (impedance and connection) or confirm the grounding method. |\n| 9 | LINE-05 | Gen-tie | Winter rating 400 MVA is below the summer rating 450 MVA; cooler winter air should allow more. *The summer and winter values appear to be swapped.* | Confirm the seasonal ratings. |\n| 10 | TOP-01 | COL3 | Bus COL3 (34.5 kV) is not connected to the POI. | Connect the bus or remove it from the case. |\n\n## Clarifications requested\n\n| # | Rule | Element | Finding | Required action |\n|---|---|---|---|---|\n| 1 | GEN-03 | WTG group 1, WTG group 2 | Reactive range -30 to 30 Mvar is below +/-33 Mvar (0.33 x Pmax) at the terminals. | Provide the capability curve at full output. |\n| 2 | DYN-03 | WTG group 1 REGCA1, WTG group 2 REGCA1 | Tg = 0.005 s is shorter than 4 integration steps (0.0167 s). | Set Tg to 0 to bypass it, or to at least 0.017 s. |\n| 3 | PF-03 | Prairie Ridge Wind (synthetic) | At the required operating points: Main transformer loaded 112% (export), Main transformer loaded 112% (unity), Main transformer loaded 116% (absorb). | Review voltage control settings and equipment ratings. |\n| 4 | SC-01 | Prairie Ridge Wind (synthetic) | Short-circuit ratio 2.8 (560 MVA / 200 MW) is below 3: a weak connection point. | Provide a validated EMT (PSCAD) model; an EMT study will be required. |\n| 5 | ML-01 | Collector 1 | Each value passes its range check, but the combination is more unusual than every one of the 600 accepted 34.5 kV cable models: X high (+3.5 robust sd), R low (-3.0 robust sd), B low (-2.8 robust sd). | Confirm the conductor and cable data sheet values together. |\n\n## Study results\n\n- AC power flow: **no valid solution as submitted**; results below use the probable corrections and are provisional until the market participant confirms them.\n- Reactive capability at the POI: +23.1 / -103.7 Mvar at 197.0 MW against +/-64.7 Mvar required.\n- Short-circuit ratio at the POI: 2.8; collector fault level 11.6 kA (switchgear 25 kA).\n- Most sensitive input for the POI reactive margin: Inverter reactive limit (-10% / +10%: -47.5 to -36.4 Mvar).\n\n_Synthetic project and data, produced by an automated first-pass review; engineering judgement and AESO's PDUP checklist govern._\n"
+  }
+ ]
+}

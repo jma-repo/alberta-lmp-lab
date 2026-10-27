@@ -1,0 +1,69 @@
+# SYNTHETIC submission for demonstrating the validator: invented project, invented numbers.
+# A clean model, to show the validator accepts good data and does not flag everything.
+
+project:
+  name: Coulee Solar + Storage (synthetic)
+  id: SYN-0002
+  technology: solar
+  stage: 2
+  capacity_mw: 210
+  poi: Substation 902S 138 kV (fictional)
+  submitted_by: Example Solar Inc. (fictional)
+
+system_equivalent:
+  bus: POI
+  short_circuit_mva: 2400
+  x_over_r: 9
+  mv_switchgear_ka: 31.5
+
+buses:
+  - {name: POI, kv: 138}
+  - {name: HV, kv: 138}
+  - {name: MV, kv: 34.5}
+  - {name: F1, kv: 34.5}
+  - {name: F2, kv: 34.5}
+  - {name: G1, kv: 0.63}
+  - {name: G2, kv: 0.63}
+
+lines:
+  - {name: Gen-tie, from: POI, to: HV, kv: 138, construction: overhead, length_km: 6,
+     r_pu: 0.00378, x_pu: 0.01418, b_pu: 0.003656, rating_mva: {summer: 287, winter: 330}}
+  - {name: PV collector, from: MV, to: F1, kv: 34.5, construction: cable, length_km: 5, parallel: 4,
+     r_pu: 0.0311, x_pu: 0.0504, b_pu: 0.007856, rating_mva: {summer: 50, winter: 55}}
+  - {name: BESS collector, from: MV, to: F2, kv: 34.5, construction: cable, length_km: 1.2,
+     r_pu: 0.00746, x_pu: 0.0121, b_pu: 0.001885, rating_mva: {summer: 80, winter: 90}}
+
+transformers:
+  - {name: Main transformer, role: main, hv: HV, lv: MV, kv_hv: 138, kv_lv: 34.5, mva: 230, z_pct: 9.5,
+     x_over_r: 35, vector_group: YNd1, tap: {side: hv, min_pct: -10, max_pct: 10, steps: 33, controlled_bus: MV}}
+  - {name: PV inverter transformers, role: generator, hv: F1, lv: G1, kv_hv: 34.5, kv_lv: 0.63, mva: 176,
+     z_pct: 6.0, x_over_r: 8, vector_group: Dyn11}
+  - {name: BESS inverter transformers, role: generator, hv: F2, lv: G2, kv_hv: 34.5, kv_lv: 0.63, mva: 70,
+     z_pct: 6.0, x_over_r: 8, vector_group: Dyn11}
+
+grounding_transformers:
+  - {name: Collector grounding transformer, bus: MV, type: zigzag}
+
+generators:
+  - {name: PV inverters, bus: G1, units: 44, unit_mva: 4.0, mbase_mva: 176, pmax_mw: 150, pmin_mw: 0,
+     qmax_mvar: 88, qmin_mvar: -88, dynamics: pv}
+  - {name: BESS inverters, bus: G2, units: 14, unit_mva: 5.0, mbase_mva: 70, pmax_mw: 60, pmin_mw: -60,
+     qmax_mvar: 36, qmin_mvar: -36, dynamics: bess}
+
+dynamics:
+  pv:
+    REGCA1: {Tg: 0.02, Rrpwr: 10, Brkpt: 0.9, Zerox: 0.4, Lvpl1: 1.22, Volim: 1.2, Lvpnt1: 0.8, Lvpnt0: 0.4,
+             Iolim: -1.3, Tfltr: 0.02, Khv: 0.7}
+    REECA1: {Vdip: 0.9, Vup: 1.1, Trv: 0.02, dbd1: -0.05, dbd2: 0.05, Kqv: 2.0, Tp: 0.05, Tiq: 0.02,
+             Tpord: 0.02, Imax: 1.1, QMax: 0.5, QMin: -0.5, PMax: 0.852, PMin: 0.0}
+    REPCA1: {Tfltr: 0.02, Kp: 18, Ki: 5, Tfv: 0.075, Kc: 0.02, Emax: 0.1, Emin: -0.1, Kpg: 0.1, Kig: 0.05,
+             Tp: 0.25, Tg: 0.1, fdbd1: -0.0006, fdbd2: 0.0006, Ddn: 20, Dup: 0, Qmax: 0.5, Qmin: -0.5,
+             Pmax: 0.852, Pmin: 0.0}
+  bess:
+    REGCA1: {Tg: 0.02, Rrpwr: 10, Brkpt: 0.9, Zerox: 0.4, Lvpl1: 1.22, Volim: 1.2, Lvpnt1: 0.8, Lvpnt0: 0.4,
+             Iolim: -1.3, Tfltr: 0.02, Khv: 0.7}
+    REECA1: {Vdip: 0.9, Vup: 1.1, Trv: 0.02, dbd1: -0.05, dbd2: 0.05, Kqv: 2.0, Tp: 0.05, Tiq: 0.02,
+             Tpord: 0.02, Imax: 1.1, QMax: 0.514, QMin: -0.514, PMax: 0.857, PMin: -0.857}
+    REPCA1: {Tfltr: 0.02, Kp: 18, Ki: 5, Tfv: 0.075, Kc: 0.02, Emax: 0.1, Emin: -0.1, Kpg: 0.1, Kig: 0.05,
+             Tp: 0.25, Tg: 0.1, fdbd1: -0.0006, fdbd2: 0.0006, Ddn: 25, Dup: 25, Qmax: 0.514, Qmin: -0.514,
+             Pmax: 0.857, Pmin: -0.857}

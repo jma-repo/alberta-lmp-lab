@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.png binary
+*.xlsx binary
+*.zip binary
+*.pdf binary
+site/assets/plotly.min.js -diff linguist-vendored
+site/** linguist-generated

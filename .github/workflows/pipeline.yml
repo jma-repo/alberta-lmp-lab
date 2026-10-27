@@ -1,0 +1,38 @@
+name: pipeline
+
+# Rebuilds every result from AESO's public files, without a local LLM (the agent falls back to its
+# deterministic planner). Manual and weekly only, so routine pushes never download from AESO.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    name: Fetch, ingest, analyze, forecast, SCED, PDUP, agent, dashboard
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.6"
+          enable-cache: true
+      - name: Install
+        run: uv sync --frozen
+      - name: Run every step
+        env:
+          LMPLAB_HOME: ${{ runner.temp }}/run
+        run: uv run lmplab all --no-llm
+      - name: Keep the reports and the dashboard
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-output
+          path: |
+            ${{ runner.temp }}/run/artifacts/reports
+            ${{ runner.temp }}/run/artifacts/pdup
+            ${{ runner.temp }}/run/site
+          retention-days: 14

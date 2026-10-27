@@ -1,0 +1,80 @@
+# Stylized seven-zone Alberta network for what-if studies.
+#
+# Illustrative only: zones, corridors and offers are chosen to behave like Alberta's
+# (north-south 500 kV backbone, south-east renewables that can be trapped, a remote
+# north-west fed by two circuits), not to reproduce AESO's network model. Ratings in MW,
+# reactance and resistance in p.u. on 100 MVA. Every line's outage is studied (N-1) and
+# losses are on. Parameters were tuned so congestion is about as frequent as in AESO's
+# 2025 backcast (north-west high, south-east low in a minority of hours).
+
+reference: CEN
+zones:
+  NW:  {name: Northwest, load: 850}
+  NE:  {name: Northeast, load: 2900}
+  EDM: {name: Edmonton, load: 2400}
+  CEN: {name: Central, load: 1100}
+  CAL: {name: Calgary, load: 2350}
+  SW:  {name: Southwest, load: 550}
+  SE:  {name: Southeast, load: 700}
+
+lines:   # name: [from, to, x, rating, emergency rating, r]
+  NW-EDM 1:  [NW, EDM, 0.10, 350, 420, 0.010]
+  NW-EDM 2:  [NW, EDM, 0.10, 350, 420, 0.010]
+  NE-EDM 1:  [NE, EDM, 0.03, 1200, 1400, 0.002]
+  NE-EDM 2:  [NE, EDM, 0.03, 1200, 1400, 0.002]
+  EDM-CEN 1: [EDM, CEN, 0.025, 1500, 1800, 0.002]
+  EDM-CEN 2: [EDM, CEN, 0.025, 1500, 1800, 0.002]
+  EDM-CAL:   [EDM, CAL, 0.04, 1000, 1000, 0.002]   # west 500 kV path
+  CEN-CAL:   [CEN, CAL, 0.02, 1800, 2000, 0.002]
+  CAL-SW 1:  [CAL, SW, 0.04, 800, 1000, 0.003]
+  CAL-SW 2:  [CAL, SW, 0.04, 800, 1000, 0.003]
+  CEN-SE:    [CEN, SE, 0.05, 900, 1000, 0.005]     # south-east export corridor
+  SW-SE:     [SW, SE, 0.05, 600, 650, 0.005]
+  NE-SE:     [NE, SE, 0.07, 1100, 1100, 0.004]     # east 500 kV path
+
+units:   # name: [zone, MW, offer $/MWh, availability profile]
+  NW gas:          [NW, 480, 38, firm]
+  NW peaker:       [NW, 250, 95, firm]
+  NE cogeneration: [NE, 3200, 8, firm]
+  NE gas:          [NE, 900, 42, firm]
+  Edmonton CC:     [EDM, 1400, 28, firm]
+  Wabamun gas:     [EDM, 2200, 40, firm]
+  Edmonton peaker: [EDM, 300, 85, firm]
+  Central gas:     [CEN, 700, 43, firm]
+  Central peaker:  [CEN, 400, 88, firm]
+  Calgary CC:      [CAL, 860, 31, firm]
+  Calgary peaker:  [CAL, 400, 90, firm]
+  SW wind:         [SW, 1700, 0, wind_sw]
+  Bow hydro:       [SW, 500, 22, firm]
+  BC import:       [SW, 700, 48, firm]
+  SE wind:         [SE, 1600, 0, wind_se]
+  SE solar:        [SE, 1000, 0, solar]
+  SE gas:          [SE, 780, 41, firm]
+  SK import:       [SE, 150, 55, firm]
+
+monte_carlo:
+  samples: 400
+  load_sigma: 0.06           # system load factor ~ N(1, sigma), clipped
+  load_range: [0.85, 1.18]
+  zone_noise: 0.02
+  wind_beta: [1.1, 1.7]      # capacity factor ~ Beta(a, b), mean 0.39
+  wind_correlation: 0.6      # Gaussian copula between south-west and south-east wind
+  daylight_share: 0.5
+  solar_range: [0.15, 0.75]
+  separation_threshold: 5.0
+
+showcase_hours:
+  Windy spring afternoon:  {load: 0.95, wind_sw: 0.75, wind_se: 0.80, solar: 0.60}
+  Cold winter evening:     {load: 1.15, wind_sw: 0.10, wind_se: 0.08, solar: 0.0}
+
+scenarios:   # run in order; `uprate` adds MW to every circuit of a corridor (zone-zone), and
+             # `{auto: MW}` picks the corridor whose rating value the previous scenario raised most
+  Today's system: {}
+  +400 MW wind in the Southeast:
+    add_capacity: {SE wind: 400}
+  +400 MW SE wind and the top-ranked upgrade:
+    add_capacity: {SE wind: 400}
+    uprate: {auto: 400}
+  +400 MW SE wind and an upgrade of CEN-SE instead:
+    add_capacity: {SE wind: 400}
+    uprate: {CEN-SE: 400}

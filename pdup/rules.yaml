@@ -1,0 +1,57 @@
+# Screening thresholds for the PDUP model checks.
+#
+# Typical industry values for a first-pass review of an interconnection model, written so a
+# reviewer can tune them. They are not AESO's criteria: replace them with the values in the
+# AESO PDUP checklist and ISO rules before using this on a real submission.
+# Units: r and x in ohm/km, b in microsiemens/km, zc (surge impedance) in ohm.
+
+study:
+  base_mva: 100
+  frequency_hz: 60
+  integration_step_s: 0.004167     # quarter cycle at 60 Hz, a common PSS/E time step
+  min_time_constant_steps: 4       # non-zero time constants shorter than this many steps are numerically fragile
+  poi_power_factor: 0.95           # reactive capability required at the POI at full output, both directions
+  ltc_band: [0.99, 1.01]           # main-transformer tap changer holds its controlled bus in this band
+  plant_voltage_limits: [0.90, 1.10]   # plant buses at the required operating points
+  min_scr: 3.0                     # below this short-circuit ratio an EMT study is needed
+  capacity_tolerance: 0.02
+  dynamic_q_tolerance: 0.10
+
+lines:
+  overhead:
+    "500":  {r: [0.005, 0.04], x: [0.25, 0.40], b: [3.5, 5.5], xr: [8, 40], zc: [230, 330]}
+    "240":  {r: [0.02, 0.10], x: [0.35, 0.52], b: [2.6, 4.2], xr: [4, 20], zc: [280, 420]}
+    "138":  {r: [0.04, 0.25], x: [0.38, 0.55], b: [2.5, 3.8], xr: [2, 10], zc: [300, 440]}
+    "34.5": {r: [0.08, 0.60], x: [0.30, 0.48], b: [2.5, 3.8], xr: [0.6, 5], zc: [300, 450]}
+  cable:
+    "138":  {r: [0.01, 0.10], x: [0.10, 0.25], b: [40, 120], zc: [25, 70]}
+    "34.5": {r: [0.02, 0.40], x: [0.08, 0.25], b: [40, 220], zc: [18, 70]}
+
+transformers:
+  main:      {z_pct: [6.0, 15.0], xr: [20, 70], tap_range_pct: [5, 15]}
+  generator: {z_pct: [4.5, 9.0], xr: [4, 15]}
+
+generators:
+  q_ratio_min: 0.33                # |Q| per MW of Pmax at the terminals, both directions
+
+dynamics:                          # WECC second-generation renewable models
+  required:
+    wind: [REGCA1, REECA1, REPCA1]
+    solar: [REGCA1, REECA1, REPCA1]
+    storage: [REGCA1, REECA1, REPCA1]
+  time_constants:
+    REGCA1: [Tg, Tfltr]
+    REECA1: [Trv, Tp, Tiq, Tpord]
+    REPCA1: [Tfltr, Tfv, Tp, Tg]
+  frequency_response:              # REPCA1: droop 1/Ddn and deadband fdbd (p.u. of 60 Hz)
+    droop_pct: [2.0, 5.0]
+    max_deadband_pu: 0.0006        # 36 mHz
+  ranges:                          # Imax, droop and deadband have their own rules (DYN-04, DYN-05)
+    REGCA1: {Tg: [0.017, 0.1], Rrpwr: [0.1, 20], Brkpt: [0.8, 0.95], Zerox: [0.3, 0.5], Lvpl1: [1.0, 1.5],
+             Volim: [1.1, 1.3], Lvpnt1: [0.7, 0.9], Lvpnt0: [0.3, 0.5], Iolim: [-1.5, -1.0], Tfltr: [0.01, 0.05],
+             Khv: [0.0, 1.0]}
+    REECA1: {Vdip: [0.8, 0.9], Vup: [1.1, 1.2], Trv: [0.01, 0.05], dbd1: [-0.1, 0.0], dbd2: [0.0, 0.1],
+             Kqv: [0.0, 10.0], Tp: [0.01, 0.1], Tiq: [0.01, 0.05], Tpord: [0.01, 0.2]}
+    REPCA1: {Tfltr: [0.01, 0.05], Kp: [0.0, 20.0], Ki: [0.0, 10.0], Tfv: [0.05, 0.3], Kc: [0.0, 0.05],
+             Emax: [0.05, 0.2], Emin: [-0.2, -0.05], Kpg: [0.0, 1.0], Kig: [0.0, 1.0], Tp: [0.01, 0.5],
+             Tg: [0.05, 0.5]}

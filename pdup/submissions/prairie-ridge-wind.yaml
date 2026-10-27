@@ -1,0 +1,62 @@
+# SYNTHETIC submission for demonstrating the validator: invented project, invented numbers.
+# It contains deliberate errors of the kinds reviewers see (unit and base mix-ups, swapped
+# ratings, inconsistent dynamic data); the review report lists what the validator finds.
+
+project:
+  name: Prairie Ridge Wind (synthetic)
+  id: SYN-0001
+  technology: wind
+  stage: 2
+  capacity_mw: 200
+  poi: Substation 901S 240 kV (fictional)
+  submitted_by: Example Wind LP (fictional)
+
+system_equivalent:          # Thevenin equivalent at the POI supplied for the study
+  bus: POI
+  short_circuit_mva: 560
+  x_over_r: 8
+  mv_switchgear_ka: 25
+
+buses:
+  - {name: POI, kv: 240}
+  - {name: HV, kv: 240}
+  - {name: MV, kv: 34.5}
+  - {name: F1, kv: 34.5}
+  - {name: F2, kv: 34.5}
+  - {name: COL3, kv: 34.5}
+  - {name: G1, kv: 0.69}
+  - {name: G2, kv: 0.69}
+
+lines:                      # per circuit: impedances in p.u. on 100 MVA, ratings in MVA; `parallel` identical circuits
+  - {name: Gen-tie, from: POI, to: HV, kv: 240, construction: overhead, length_km: 12,
+     r_pu: 0.00104, x_pu: 0.00875, b_pu: 0.0207, rating_mva: {summer: 450, winter: 400}}
+  - {name: Collector 1, from: MV, to: F1, kv: 34.5, construction: cable, length_km: 8, parallel: 3,
+     r_pu: 0.01479, x_pu: 0.16134, b_pu: 0.00571, rating_mva: {summer: 40, winter: 45}}
+  - {name: Collector 2, from: MV, to: F2, kv: 34.5, construction: cable, length_km: 9, parallel: 3,
+     r_pu: 0.0560, x_pu: 1.08, b_pu: 0.01414, rating_mva: {summer: 40, winter: 45}}
+
+transformers:               # impedance in % on the transformer's own MVA base
+  - {name: Main transformer, role: main, hv: HV, lv: MV, kv_hv: 240, kv_lv: 34.5, mva: 180, z_pct: 5.56,
+     x_over_r: 40, vector_group: YNd1, tap: {side: hv, min_pct: -10, max_pct: 10, steps: 33, controlled_bus: MV}}
+  - {name: GSU 1, role: generator, hv: F1, lv: G1, kv_hv: 34.5, kv_lv: 0.69, mva: 112, z_pct: 6.0, x_over_r: 8,
+     vector_group: Dyn11}
+  - {name: GSU 2, role: generator, hv: F2, lv: G2, kv_hv: 34.5, kv_lv: 690, mva: 112, z_pct: 6.0, x_over_r: 8,
+     vector_group: Dyn11}
+
+grounding_transformers: []
+
+generators:                 # aggregated equivalents
+  - {name: WTG group 1, bus: G1, units: 28, unit_mva: 4.0, mbase_mva: 112, pmax_mw: 100.8, pmin_mw: 0,
+     qmax_mvar: 30, qmin_mvar: -30, dynamics: wtg}
+  - {name: WTG group 2, bus: G2, units: 28, unit_mva: 4.0, mbase_mva: 112, pmax_mw: 100.8, pmin_mw: 0,
+     qmax_mvar: 30, qmin_mvar: -30, dynamics: wtg}
+
+dynamics:
+  wtg:
+    REGCA1: {Tg: 0.005, Rrpwr: 10, Brkpt: 0.9, Zerox: 0.4, Lvpl1: 1.22, Volim: 1.2, Lvpnt1: 0.8, Lvpnt0: 0.4,
+             Iolim: -1.3, Tfltr: 0.02, Khv: 0.7}
+    REECA1: {Vdip: 0.9, Vup: 1.1, Trv: 0.02, dbd1: -0.05, dbd2: 0.05, Kqv: 2.0, Tp: 0.05, Tiq: 0.02,
+             Tpord: 0.02, Imax: 0.9, QMax: 0.268, QMin: -0.268, PMax: 0.9, PMin: 0.0}
+    REPCA1: {Tfltr: 0.02, Kp: 18, Ki: 5, Tfv: 0.075, Kc: 0.02, Emax: 0.1, Emin: -0.1, Kpg: 0.1, Kig: 0.05,
+             Tp: 0.25, Tg: 0.1, fdbd1: -0.0006, fdbd2: 0.0006, Ddn: 5, Dup: 0, Qmax: 0.4, Qmin: -0.4,
+             Pmax: 0.9, Pmin: 0.0}

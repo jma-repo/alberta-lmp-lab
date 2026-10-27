@@ -1,0 +1,1563 @@
+{
+ "aeso_examples": [
+  {
+   "name": "Example 1: no binding constraint",
+   "line_y_limit": 200.0,
+   "contingencies": [],
+   "dispatch": {
+    "G1": 200.0,
+    "G2": 50.0
+   },
+   "flows": {
+    "X": 50.0,
+    "Y": 150.0,
+    "Z": 100.0
+   },
+   "prices": [
+    {
+     "bus": "A",
+     "lmp": 40.0,
+     "mce": 40.0,
+     "mcl": -0.0,
+     "mcc": 0.0
+    },
+    {
+     "bus": "B",
+     "lmp": 40.0,
+     "mce": 40.0,
+     "mcl": -0.0,
+     "mcc": 0.0
+    },
+    {
+     "bus": "C",
+     "lmp": 40.0,
+     "mce": 40.0,
+     "mcl": -0.0,
+     "mcc": 0.0
+    }
+   ],
+   "binding": [],
+   "incremental_cost": {
+    "A": 40.0,
+    "B": 40.0,
+    "C": 40.0
+   },
+   "published": {
+    "A": 40.0,
+    "B": 40.0,
+    "C": 40.0
+   },
+   "matches_published": true
+  },
+  {
+   "name": "Example 2: N-0 limit on line Y",
+   "line_y_limit": 100.0,
+   "contingencies": [],
+   "dispatch": {
+    "G1": 50.0,
+    "G2": 200.0
+   },
+   "flows": {
+    "X": -50.0,
+    "Y": 100.0,
+    "Z": 150.0
+   },
+   "prices": [
+    {
+     "bus": "A",
+     "lmp": 10.0,
+     "mce": 10.0,
+     "mcl": -0.0,
+     "mcc": 0.0
+    },
+    {
+     "bus": "B",
+     "lmp": 40.0,
+     "mce": 10.0,
+     "mcl": -0.0,
+     "mcc": 30.0
+    },
+    {
+     "bus": "C",
+     "lmp": 70.0,
+     "mce": 10.0,
+     "mcl": -0.0,
+     "mcc": 60.0
+    }
+   ],
+   "binding": [
+    {
+     "line": "Y",
+     "contingency": null,
+     "direction": "forward",
+     "shadow_price": 90.0,
+     "flow": 100.0,
+     "limit": 100.0
+    }
+   ],
+   "incremental_cost": {
+    "A": 10.0,
+    "B": 40.0,
+    "C": 70.0
+   },
+   "published": {
+    "A": 10.0,
+    "B": 40.0,
+    "C": 40.0
+   },
+   "matches_published": false
+  },
+  {
+   "name": "Example 3: N-1 limit on line X for loss of line Y",
+   "line_y_limit": 200.0,
+   "contingencies": [
+    "Y"
+   ],
+   "dispatch": {
+    "G1": 100.0,
+    "G2": 150.0
+   },
+   "flows": {
+    "X": -16.67,
+    "Y": 116.67,
+    "Z": 133.33
+   },
+   "prices": [
+    {
+     "bus": "A",
+     "lmp": 10.0,
+     "mce": 10.0,
+     "mcl": -0.0,
+     "mcc": 0.0
+    },
+    {
+     "bus": "B",
+     "lmp": 40.0,
+     "mce": 10.0,
+     "mcl": -0.0,
+     "mcc": 30.0
+    },
+    {
+     "bus": "C",
+     "lmp": 40.0,
+     "mce": 10.0,
+     "mcl": -0.0,
+     "mcc": 30.0
+    }
+   ],
+   "binding": [
+    {
+     "line": "X",
+     "contingency": "Y",
+     "direction": "forward",
+     "shadow_price": 30.0,
+     "flow": 100.0,
+     "limit": 100.0
+    }
+   ],
+   "incremental_cost": {
+    "A": 10.0,
+    "B": 40.0,
+    "C": 40.0
+   },
+   "published": {
+    "A": 10.0,
+    "B": 40.0,
+    "C": 40.0
+   },
+   "matches_published": true
+  }
+ ],
+ "case": {
+  "reference": "CEN",
+  "zones": {
+   "NW": {
+    "name": "Northwest",
+    "load": 850
+   },
+   "NE": {
+    "name": "Northeast",
+    "load": 2900
+   },
+   "EDM": {
+    "name": "Edmonton",
+    "load": 2400
+   },
+   "CEN": {
+    "name": "Central",
+    "load": 1100
+   },
+   "CAL": {
+    "name": "Calgary",
+    "load": 2350
+   },
+   "SW": {
+    "name": "Southwest",
+    "load": 550
+   },
+   "SE": {
+    "name": "Southeast",
+    "load": 700
+   }
+  },
+  "lines": [
+   {
+    "name": "NW-EDM 1",
+    "from": "NW",
+    "to": "EDM",
+    "rating": 350,
+    "emergency": 420
+   },
+   {
+    "name": "NW-EDM 2",
+    "from": "NW",
+    "to": "EDM",
+    "rating": 350,
+    "emergency": 420
+   },
+   {
+    "name": "NE-EDM 1",
+    "from": "NE",
+    "to": "EDM",
+    "rating": 1200,
+    "emergency": 1400
+   },
+   {
+    "name": "NE-EDM 2",
+    "from": "NE",
+    "to": "EDM",
+    "rating": 1200,
+    "emergency": 1400
+   },
+   {
+    "name": "EDM-CEN 1",
+    "from": "EDM",
+    "to": "CEN",
+    "rating": 1500,
+    "emergency": 1800
+   },
+   {
+    "name": "EDM-CEN 2",
+    "from": "EDM",
+    "to": "CEN",
+    "rating": 1500,
+    "emergency": 1800
+   },
+   {
+    "name": "EDM-CAL",
+    "from": "EDM",
+    "to": "CAL",
+    "rating": 1000,
+    "emergency": 1000
+   },
+   {
+    "name": "CEN-CAL",
+    "from": "CEN",
+    "to": "CAL",
+    "rating": 1800,
+    "emergency": 2000
+   },
+   {
+    "name": "CAL-SW 1",
+    "from": "CAL",
+    "to": "SW",
+    "rating": 800,
+    "emergency": 1000
+   },
+   {
+    "name": "CAL-SW 2",
+    "from": "CAL",
+    "to": "SW",
+    "rating": 800,
+    "emergency": 1000
+   },
+   {
+    "name": "CEN-SE",
+    "from": "CEN",
+    "to": "SE",
+    "rating": 900,
+    "emergency": 1000
+   },
+   {
+    "name": "SW-SE",
+    "from": "SW",
+    "to": "SE",
+    "rating": 600,
+    "emergency": 650
+   },
+   {
+    "name": "NE-SE",
+    "from": "NE",
+    "to": "SE",
+    "rating": 1100,
+    "emergency": 1100
+   }
+  ],
+  "units": {
+   "NW gas": {
+    "zone": "NW",
+    "mw": 480,
+    "offer": 38,
+    "profile": "firm"
+   },
+   "NW peaker": {
+    "zone": "NW",
+    "mw": 250,
+    "offer": 95,
+    "profile": "firm"
+   },
+   "NE cogeneration": {
+    "zone": "NE",
+    "mw": 3200,
+    "offer": 8,
+    "profile": "firm"
+   },
+   "NE gas": {
+    "zone": "NE",
+    "mw": 900,
+    "offer": 42,
+    "profile": "firm"
+   },
+   "Edmonton CC": {
+    "zone": "EDM",
+    "mw": 1400,
+    "offer": 28,
+    "profile": "firm"
+   },
+   "Wabamun gas": {
+    "zone": "EDM",
+    "mw": 2200,
+    "offer": 40,
+    "profile": "firm"
+   },
+   "Edmonton peaker": {
+    "zone": "EDM",
+    "mw": 300,
+    "offer": 85,
+    "profile": "firm"
+   },
+   "Central gas": {
+    "zone": "CEN",
+    "mw": 700,
+    "offer": 43,
+    "profile": "firm"
+   },
+   "Central peaker": {
+    "zone": "CEN",
+    "mw": 400,
+    "offer": 88,
+    "profile": "firm"
+   },
+   "Calgary CC": {
+    "zone": "CAL",
+    "mw": 860,
+    "offer": 31,
+    "profile": "firm"
+   },
+   "Calgary peaker": {
+    "zone": "CAL",
+    "mw": 400,
+    "offer": 90,
+    "profile": "firm"
+   },
+   "SW wind": {
+    "zone": "SW",
+    "mw": 1700,
+    "offer": 0,
+    "profile": "wind_sw"
+   },
+   "Bow hydro": {
+    "zone": "SW",
+    "mw": 500,
+    "offer": 22,
+    "profile": "firm"
+   },
+   "BC import": {
+    "zone": "SW",
+    "mw": 700,
+    "offer": 48,
+    "profile": "firm"
+   },
+   "SE wind": {
+    "zone": "SE",
+    "mw": 1600,
+    "offer": 0,
+    "profile": "wind_se"
+   },
+   "SE solar": {
+    "zone": "SE",
+    "mw": 1000,
+    "offer": 0,
+    "profile": "solar"
+   },
+   "SE gas": {
+    "zone": "SE",
+    "mw": 780,
+    "offer": 41,
+    "profile": "firm"
+   },
+   "SK import": {
+    "zone": "SE",
+    "mw": 150,
+    "offer": 55,
+    "profile": "firm"
+   }
+  }
+ },
+ "showcase": [
+  {
+   "name": "Windy spring afternoon",
+   "hour": {
+    "load": 0.95,
+    "wind_sw": 0.75,
+    "wind_se": 0.8,
+    "solar": 0.6
+   },
+   "prices": [
+    {
+     "bus": "NW",
+     "lmp": 41.33,
+     "mce": 40.48,
+     "mcl": 0.92,
+     "mcc": -0.07
+    },
+    {
+     "bus": "NE",
+     "lmp": 38.16,
+     "mce": 40.48,
+     "mcl": -1.09,
+     "mcc": -1.23
+    },
+    {
+     "bus": "EDM",
+     "lmp": 40.0,
+     "mce": 40.48,
+     "mcl": -0.41,
+     "mcc": -0.07
+    },
+    {
+     "bus": "CEN",
+     "lmp": 40.48,
+     "mce": 40.48,
+     "mcl": -0.0,
+     "mcc": 0.0
+    },
+    {
+     "bus": "CAL",
+     "lmp": 43.23,
+     "mce": 40.48,
+     "mcl": -0.01,
+     "mcc": 2.76
+    },
+    {
+     "bus": "SW",
+     "lmp": 22.0,
+     "mce": 40.48,
+     "mcl": -1.45,
+     "mcc": -17.04
+    },
+    {
+     "bus": "SE",
+     "lmp": 31.42,
+     "mce": 40.48,
+     "mcl": -2.46,
+     "mcc": -6.6
+    }
+   ],
+   "binding": [
+    {
+     "line": "CAL-SW 2",
+     "contingency": "CAL-SW 1",
+     "direction": "reverse",
+     "shadow_price": 28.1461,
+     "flow": -1000.0,
+     "limit": 1000.0
+    }
+   ],
+   "flows": {
+    "NW-EDM 1": -163.8,
+    "NW-EDM 2": -163.8,
+    "NE-EDM 1": 356.4,
+    "NE-EDM 2": 356.4,
+    "EDM-CEN 1": 223.7,
+    "EDM-CEN 2": 223.7,
+    "EDM-CAL": 159.3,
+    "CEN-CAL": 39.0,
+    "CAL-SW 1": -587.1,
+    "CAL-SW 2": -587.1,
+    "CEN-SE": -700.6,
+    "SW-SE": -246.6,
+    "NE-SE": -267.8
+   },
+   "dispatch": {
+    "NW gas": 480.0,
+    "NW peaker": 0.0,
+    "NE cogeneration": 3200.0,
+    "NE gas": 0.0,
+    "Edmonton CC": 1400.0,
+    "Wabamun gas": 1101.5,
+    "Edmonton peaker": 0.0,
+    "Central gas": 0.0,
+    "Central peaker": 0.0,
+    "Calgary CC": 860.0,
+    "Calgary peaker": 0.0,
+    "SW wind": 1275.0,
+    "Bow hydro": 175.1,
+    "BC import": 0.0,
+    "SE wind": 1280.0,
+    "SE solar": 600.0,
+    "SE gas": 0.0,
+    "SK import": 0.0
+   },
+   "losses_mw": 64.1,
+   "contingencies": 13
+  },
+  {
+   "name": "Cold winter evening",
+   "hour": {
+    "load": 1.15,
+    "wind_sw": 0.1,
+    "wind_se": 0.08,
+    "solar": 0.0
+   },
+   "prices": [
+    {
+     "bus": "NW",
+     "lmp": 95.0,
+     "mce": 86.26,
+     "mcl": 2.36,
+     "mcc": 6.38
+    },
+    {
+     "bus": "NE",
+     "lmp": 83.81,
+     "mce": 86.26,
+     "mcl": -2.45,
+     "mcc": 0.0
+    },
+    {
+     "bus": "EDM",
+     "lmp": 85.0,
+     "mce": 86.26,
+     "mcl": -1.26,
+     "mcc": 0.0
+    },
+    {
+     "bus": "CEN",
+     "lmp": 86.26,
+     "mce": 86.26,
+     "mcl": -0.0,
+     "mcc": 0.0
+    },
+    {
+     "bus": "CAL",
+     "lmp": 87.53,
+     "mce": 86.26,
+     "mcl": 1.27,
+     "mcc": 0.0
+    },
+    {
+     "bus": "SW",
+     "lmp": 85.32,
+     "mce": 86.26,
+     "mcl": -0.94,
+     "mcc": -0.0
+    },
+    {
+     "bus": "SE",
+     "lmp": 84.31,
+     "mce": 86.26,
+     "mcl": -1.95,
+     "mcc": -0.0
+    }
+   ],
+   "binding": [
+    {
+     "line": "NW-EDM 2",
+     "contingency": "NW-EDM 1",
+     "direction": "reverse",
+     "shadow_price": 6.3771,
+     "flow": -420.0,
+     "limit": 420.0
+    }
+   ],
+   "flows": {
+    "NW-EDM 1": -210.0,
+    "NW-EDM 2": -210.0,
+    "NE-EDM 1": 327.5,
+    "NE-EDM 2": 327.5,
+    "EDM-CEN 1": 422.2,
+    "EDM-CEN 2": 422.2,
+    "EDM-CAL": 507.7,
+    "CEN-CAL": 487.6,
+    "CAL-SW 1": -423.6,
+    "CAL-SW 2": -423.6,
+    "CEN-SE": -253.4,
+    "SW-SE": -109.6,
+    "NE-SE": 110.1
+   },
+   "dispatch": {
+    "NW gas": 480.0,
+    "NW peaker": 77.5,
+    "NE cogeneration": 3200.0,
+    "NE gas": 900.0,
+    "Edmonton CC": 1400.0,
+    "Wabamun gas": 2200.0,
+    "Edmonton peaker": 277.2,
+    "Central gas": 700.0,
+    "Central peaker": 0.0,
+    "Calgary CC": 860.0,
+    "Calgary peaker": 0.0,
+    "SW wind": 170.0,
+    "Bow hydro": 500.0,
+    "BC import": 700.0,
+    "SE wind": 128.0,
+    "SE solar": 0.0,
+    "SE gas": 780.0,
+    "SK import": 150.0
+   },
+   "losses_mw": 45.2,
+   "contingencies": 13
+  }
+ ],
+ "scenarios": {
+  "Today's system": {
+   "zones": {
+    "NW": {
+     "mean": 51.16,
+     "p10": 41.32,
+     "p90": 95.0,
+     "separated_share": 0.155,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      336,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      62
+     ]
+    },
+    "NE": {
+     "mean": 41.12,
+     "p10": 38.44,
+     "p90": 42.0,
+     "separated_share": 0.048,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      6,
+      87,
+      298,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    },
+    "EDM": {
+     "mean": 41.97,
+     "p10": 40.0,
+     "p90": 42.85,
+     "separated_share": 0.0,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      388,
+      9,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "CEN": {
+     "mean": 42.73,
+     "p10": 40.62,
+     "p90": 43.72,
+     "separated_share": 0.015,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      390,
+      9,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "CAL": {
+     "mean": 43.75,
+     "p10": 41.08,
+     "p90": 46.16,
+     "separated_share": 0.05,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      355,
+      37,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "SW": {
+     "mean": 39.12,
+     "p10": 22.0,
+     "p90": 43.73,
+     "separated_share": 0.165,
+     "histogram": [
+      0,
+      6,
+      0,
+      0,
+      0,
+      54,
+      0,
+      0,
+      40,
+      277,
+      22,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "SE": {
+     "mean": 39.39,
+     "p10": 32.44,
+     "p90": 42.26,
+     "separated_share": 0.26,
+     "histogram": [
+      2,
+      4,
+      0,
+      0,
+      1,
+      6,
+      0,
+      50,
+      38,
+      290,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "alp_mean": 42.62,
+   "binding_share": {
+    "CAL-SW 2 | loss of CAL-SW 1": 0.177,
+    "NW-EDM 2 | loss of NW-EDM 1": 0.155,
+    "SW-SE | loss of CEN-SE": 0.09,
+    "EDM-CAL | loss of CEN-CAL": 0.025,
+    "SW-SE | loss of CEN-CAL": 0.005
+   },
+   "rating_value_kusd_per_mw_year": {
+    "NW-EDM": 66.8,
+    "CAL-SW": 46.1,
+    "SW-SE": 9.8,
+    "EDM-CAL": 1.5
+   },
+   "congestion_rent_per_hour": 11411.0,
+   "production_cost_per_hour": 238606.0,
+   "curtailment_mw": 3.0,
+   "losses_mw": 42.6,
+   "samples": 400,
+   "spec": {}
+  },
+  "+400 MW wind in the Southeast": {
+   "zones": {
+    "NW": {
+     "mean": 51.04,
+     "p10": 41.31,
+     "p90": 95.0,
+     "separated_share": 0.16,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      333,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      62
+     ]
+    },
+    "NE": {
+     "mean": 40.67,
+     "p10": 38.25,
+     "p90": 42.0,
+     "separated_share": 0.068,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      21,
+      97,
+      273,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    },
+    "EDM": {
+     "mean": 41.83,
+     "p10": 40.0,
+     "p90": 42.85,
+     "separated_share": 0.003,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      15,
+      376,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "CEN": {
+     "mean": 42.66,
+     "p10": 40.6,
+     "p90": 43.69,
+     "separated_share": 0.035,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      387,
+      11,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "CAL": {
+     "mean": 44.04,
+     "p10": 40.86,
+     "p90": 48.11,
+     "separated_share": 0.098,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      333,
+      51,
+      15,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "SW": {
+     "mean": 38.23,
+     "p10": 22.0,
+     "p90": 43.86,
+     "separated_share": 0.212,
+     "histogram": [
+      3,
+      9,
+      0,
+      0,
+      0,
+      62,
+      0,
+      0,
+      41,
+      253,
+      30,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "SE": {
+     "mean": 37.42,
+     "p10": 31.66,
+     "p90": 42.13,
+     "separated_share": 0.323,
+     "histogram": [
+      4,
+      18,
+      0,
+      0,
+      2,
+      7,
+      0,
+      55,
+      47,
+      259,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "alp_mean": 42.34,
+   "binding_share": {
+    "CAL-SW 2 | loss of CAL-SW 1": 0.215,
+    "NW-EDM 2 | loss of NW-EDM 1": 0.155,
+    "SW-SE | loss of CEN-SE": 0.152,
+    "EDM-CAL | loss of CEN-CAL": 0.025,
+    "SW-SE | loss of CEN-CAL": 0.01
+   },
+   "rating_value_kusd_per_mw_year": {
+    "NW-EDM": 67.0,
+    "CAL-SW": 64.1,
+    "SW-SE": 31.1,
+    "EDM-CAL": 1.5
+   },
+   "congestion_rent_per_hour": 15128.0,
+   "production_cost_per_hour": 232843.0,
+   "curtailment_mw": 13.9,
+   "losses_mw": 45.0,
+   "samples": 400,
+   "spec": {
+    "add_capacity": {
+     "SE wind": 400
+    }
+   }
+  },
+  "+400 MW SE wind and the top-ranked upgrade": {
+   "zones": {
+    "NW": {
+     "mean": 51.04,
+     "p10": 41.31,
+     "p90": 95.0,
+     "separated_share": 0.17,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      336,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      62
+     ]
+    },
+    "NE": {
+     "mean": 40.89,
+     "p10": 38.33,
+     "p90": 42.0,
+     "separated_share": 0.04,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      9,
+      108,
+      275,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    },
+    "EDM": {
+     "mean": 41.82,
+     "p10": 40.0,
+     "p90": 42.82,
+     "separated_share": 0.005,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      11,
+      381,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "CEN": {
+     "mean": 42.58,
+     "p10": 40.57,
+     "p90": 43.66,
+     "separated_share": 0.022,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      391,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "CAL": {
+     "mean": 43.63,
+     "p10": 40.82,
+     "p90": 46.17,
+     "separated_share": 0.065,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      354,
+      43,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "SW": {
+     "mean": 37.85,
+     "p10": 22.0,
+     "p90": 43.51,
+     "separated_share": 0.193,
+     "histogram": [
+      4,
+      9,
+      0,
+      0,
+      0,
+      62,
+      0,
+      0,
+      46,
+      262,
+      16,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "SE": {
+     "mean": 38.67,
+     "p10": 31.92,
+     "p90": 42.15,
+     "separated_share": 0.297,
+     "histogram": [
+      1,
+      6,
+      1,
+      0,
+      1,
+      10,
+      1,
+      56,
+      52,
+      264,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "alp_mean": 42.37,
+   "binding_share": {
+    "CAL-SW 2 | loss of CAL-SW 1": 0.203,
+    "NW-EDM 2 | loss of NW-EDM 1": 0.155,
+    "CEN-SE | loss of SW-SE": 0.025,
+    "EDM-CAL | loss of CEN-CAL": 0.022,
+    "CEN-SE | loss of NE-SE": 0.01
+   },
+   "rating_value_kusd_per_mw_year": {
+    "NW-EDM": 67.2,
+    "CAL-SW": 58.4,
+    "CEN-SE": 8.6,
+    "EDM-CAL": 1.6
+   },
+   "congestion_rent_per_hour": 13246.0,
+   "production_cost_per_hour": 232550.0,
+   "curtailment_mw": 7.1,
+   "losses_mw": 45.0,
+   "samples": 400,
+   "spec": {
+    "add_capacity": {
+     "SE wind": 400
+    },
+    "uprate": {
+     "SW-SE": 400
+    }
+   }
+  },
+  "+400 MW SE wind and an upgrade of CEN-SE instead": {
+   "zones": {
+    "NW": {
+     "mean": 51.04,
+     "p10": 41.31,
+     "p90": 95.0,
+     "separated_share": 0.16,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      333,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      62
+     ]
+    },
+    "NE": {
+     "mean": 40.67,
+     "p10": 38.25,
+     "p90": 42.0,
+     "separated_share": 0.068,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      21,
+      97,
+      273,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    },
+    "EDM": {
+     "mean": 41.83,
+     "p10": 40.0,
+     "p90": 42.85,
+     "separated_share": 0.003,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      15,
+      376,
+      8,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "CEN": {
+     "mean": 42.66,
+     "p10": 40.6,
+     "p90": 43.69,
+     "separated_share": 0.035,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      387,
+      11,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "CAL": {
+     "mean": 44.04,
+     "p10": 40.86,
+     "p90": 48.11,
+     "separated_share": 0.098,
+     "histogram": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      333,
+      51,
+      15,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "SW": {
+     "mean": 38.23,
+     "p10": 22.0,
+     "p90": 43.86,
+     "separated_share": 0.212,
+     "histogram": [
+      3,
+      9,
+      0,
+      0,
+      0,
+      62,
+      0,
+      0,
+      41,
+      253,
+      30,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+     ]
+    },
+    "SE": {
+     "mean": 37.42,
+     "p10": 31.66,
+     "p90": 42.13,
+     "separated_share": 0.323,
+     "histogram": [
+      4,
+      18,
+      0,
+      0,
+      2,
+      7,
+      0,
+      55,
+      47,
+      259,
+      7,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+     ]
+    }
+   },
+   "alp_mean": 42.34,
+   "binding_share": {
+    "CAL-SW 2 | loss of CAL-SW 1": 0.215,
+    "NW-EDM 2 | loss of NW-EDM 1": 0.155,
+    "SW-SE | loss of CEN-SE": 0.152,
+    "EDM-CAL | loss of CEN-CAL": 0.025,
+    "SW-SE | loss of CEN-CAL": 0.01
+   },
+   "rating_value_kusd_per_mw_year": {
+    "NW-EDM": 67.0,
+    "CAL-SW": 64.1,
+    "SW-SE": 31.1,
+    "EDM-CAL": 1.5
+   },
+   "congestion_rent_per_hour": 15128.0,
+   "production_cost_per_hour": 232843.0,
+   "curtailment_mw": 13.9,
+   "losses_mw": 45.0,
+   "samples": 400,
+   "spec": {
+    "add_capacity": {
+     "SE wind": 400
+    },
+    "uprate": {
+     "CEN-SE": 400
+    }
+   }
+  }
+ },
+ "deltas": {
+  "se_price_drop_with_wind": 1.97,
+  "curtailment_added_gwh_per_year": 95.5,
+  "wind_production_cost_savings_musd_per_year": 50.5,
+  "top_ranked_line": "SW-SE",
+  "uprate_mw": 400,
+  "dual_estimate_musd_per_year": 12.4,
+  "upgrade_savings_musd_per_year": 2.6,
+  "upgrade_curtailment_avoided_gwh_per_year": 59.6,
+  "other_upgrade_line": "CEN-SE",
+  "other_upgrade_savings_musd_per_year": 0.0
+ }
+}

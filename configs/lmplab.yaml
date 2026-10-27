@@ -1,0 +1,31 @@
+# Alberta LMP Lab settings.
+seed: 42
+
+sources:   # AESO public files; `lmplab fetch` downloads them into data/raw (never committed)
+  backcast:
+    url: https://aesoengage.aeso.ca/53159/widgets/225379/documents/173643/download
+    path: data/raw/backcast/2025-area-level-backcast-lmp.xlsx
+    title: 2025 Area-Level Backcast LMP (AESO Engage, posted 21 Sep 2026)
+  planning_area:
+    url: https://www.aeso.ca/assets/Uploads/data-requests/Planning-Area-Load/Planning-Area-Load-Hourly-2025.zip
+    path: data/raw/planning_area_2025/planning-area-load-hourly-2025.zip
+    title: Planning Area - Hourly Load and Generation, 2025 (AESO data requests)
+  deck:
+    url: https://aesoengage.aeso.ca/53159/widgets/225379/documents/173335/download
+    path: data/raw/stakeholder/lmp-stakeholder-session-2026-09-14.pdf
+    title: Locational Marginal Pricing stakeholder session, 14 Sep 2026 (AESO Engage)
+  regions:
+    url: https://www.aeso.ca/assets/Uploads/Planning-Regions.pdf
+    path: data/raw/regions/planning-regions.pdf
+    title: AESO transmission planning areas and regions
+
+analytics:
+  separation_threshold: 5.0      # $/MWh: an area is "separated" when |LMP - ALP| exceeds this
+  price_cap: 1000.0              # AESO capped area LMPs at $1,000/MWh in its maps
+  hub_k: [2, 3, 4, 5, 6, 7]
+
+forecast:
+  train_until: "2025-08-31"      # time-based split on the 2025 backcast
+  valid_until: "2025-09-30"      # early stopping and conformal calibration
+  quantiles: [0.1, 0.5, 0.9]
+  coverage_target: 0.80

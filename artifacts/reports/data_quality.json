@@ -1,0 +1,16 @@
+{
+  "hours": 8760,
+  "areas": 42,
+  "backcast_rows": 367920,
+  "planning_rows": 367920,
+  "join_coverage": 1.0,
+  "lmp_min": -92.63,
+  "lmp_max": 1000.0,
+  "findings": [
+    "292 rows with negative actload_mw (kept; small negatives are metering noise)",
+    "26280 rows with missing CSD generation (not used by the analysis)",
+    "16055 rows with missing sysgen_mw in areas [18, 24] (treated as 0 MW: no metered asset)",
+    "0 area-hours above $1,000/MWh in the backcast"
+  ],
+  "warehouse_rows": 367920
+}
