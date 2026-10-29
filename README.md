@@ -7,7 +7,8 @@ that change creates: understanding and forecasting congestion, and making sure t
 interconnection studies are right. It runs end to end on AESO's public 2025 area-level backcast
 LMPs and planning-area load and generation.
 
-**Dashboard:** `site/index.html` (a self-contained page; published with GitHub Pages).
+**Live dashboard: [jma-repo.github.io/alberta-lmp-lab](https://jma-repo.github.io/alberta-lmp-lab/)** (a self-contained
+page built into `site/`, which also opens straight from disk).
 
 ![Overview: headline numbers and how the project maps to the two AESO postings](docs/img/overview-light.png)
 
