@@ -9,6 +9,18 @@ LMPs and planning-area load and generation.
 
 **Live dashboard: [jma-repo.github.io/alberta-lmp-lab](https://jma-repo.github.io/alberta-lmp-lab/)** (a self-contained
 page built into `site/`, which also opens straight from disk).
+**[Interactive pipeline diagram](https://jma-repo.github.io/alberta-lmp-lab/diagram.html)**: follow one run from AESO's files to the agent.
+
+```mermaid
+flowchart LR
+  SRC["AESO public files"] --> ING["ingest<br/>data-quality gate"] --> WH[("DuckDB warehouse<br/>42 areas x 8,760 hours")]
+  WH --> AN["analyze<br/>separation, surplus, hubs"]
+  WH --> FC["forecast<br/>LightGBM, conformal bands"]
+  CFG["7-zone network<br/>synthetic PDUPs"] --> SC["sced<br/>DC-OPF, N-1, Monte Carlo"]
+  CFG --> PD["pdup<br/>30-rule checklist, AC power flow"]
+  AN & FC & SC & PD --> AG["agent<br/>local LLM, six tools"]
+  AG --> RP["report<br/>static dashboard"]
+```
 
 ![Overview: headline numbers and how the project maps to the two AESO postings](docs/img/overview-light.png)
 

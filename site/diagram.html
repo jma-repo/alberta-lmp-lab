@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>alberta-lmp-lab: from AESO files to an agent</title>
+<style>
+:root{
+  --bg:#ffffff; --panel:#f6f8fa; --ink:#1f2328; --muted:#59636e; --line:#d1d9e0;
+  --edge:#8b949e; --accent:#0969da; --flow:#0969da;
+  --source:#ddf4ff; --source-b:#54aeff;
+  --process:#ffffff; --process-b:#8c959f;
+  --store:#fff8c5; --store-b:#d4a72c;
+  --output:#dafbe1; --output-b:#2da44e;
+  --gate:#ffebe9; --gate-b:#cf222e;
+  --ai:#fbefff; --ai-b:#a475f9;
+  --group:#8c959f;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1117; --panel:#161b22; --ink:#e6edf3; --muted:#9198a1; --line:#30363d;
+    --edge:#6e7681; --accent:#4493f8; --flow:#58a6ff;
+    --source:#0c2d6b; --source-b:#388bfd;
+    --process:#161b22; --process-b:#6e7681;
+    --store:#3a2d00; --store-b:#bb8009;
+    --output:#0f2d1a; --output-b:#2ea043;
+    --gate:#3d1418; --gate-b:#f85149;
+    --ai:#271a4d; --ai-b:#a371f7;
+    --group:#6e7681;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1117; --panel:#161b22; --ink:#e6edf3; --muted:#9198a1; --line:#30363d;
+  --edge:#6e7681; --accent:#4493f8; --flow:#58a6ff;
+  --source:#0c2d6b; --source-b:#388bfd;
+  --process:#161b22; --process-b:#6e7681;
+  --store:#3a2d00; --store-b:#bb8009;
+  --output:#0f2d1a; --output-b:#2ea043;
+  --gate:#3d1418; --gate-b:#f85149;
+  --ai:#271a4d; --ai-b:#a371f7;
+  --group:#6e7681;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 16px;max-width:75ch}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:8px;flex-wrap:wrap}
+.tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:8px 12px;font:inherit;cursor:pointer}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+button.btn{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 12px;font:inherit;cursor:pointer}
+button.btn:hover{border-color:var(--accent)}
+button.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:focus-visible,.node:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.chk{color:var(--muted);display:flex;gap:6px;align-items:center;margin-left:auto;font-size:14px}
+.canvas{border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:auto}
+svg{display:block;width:100%;height:auto;min-width:640px}
+.caption{min-height:3.2em;margin:12px 0;padding:10px 14px;border-left:3px solid var(--accent);background:var(--panel);border-radius:0 6px 6px 0}
+.caption b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.detail{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--panel);min-height:96px}
+.detail h2{margin:0 0 4px;font-size:16px}
+.detail p{margin:4px 0;color:var(--ink)}
+.detail .hint{color:var(--muted)}
+.detail a{color:var(--accent)}
+.detail code{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:13px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;border:1.5px solid;margin-right:5px;vertical-align:-1px}
+/* svg */
+.node rect{stroke-width:1.5;rx:8}
+.node{cursor:pointer;transition:opacity .2s}
+.node text{pointer-events:none}
+.node .l{font-size:13.5px;font-weight:600;fill:var(--ink)}
+.node .s{font-size:11.5px;fill:var(--muted)}
+.k-source rect{fill:var(--source);stroke:var(--source-b)}
+.k-process rect{fill:var(--process);stroke:var(--process-b)}
+.k-store rect{fill:var(--store);stroke:var(--store-b)}
+.k-output rect{fill:var(--output);stroke:var(--output-b)}
+.k-gate rect{fill:var(--gate);stroke:var(--gate-b)}
+.k-ai rect{fill:var(--ai);stroke:var(--ai-b)}
+.node.sel rect{stroke-width:3;stroke:var(--accent)}
+.edge{fill:none;stroke:var(--edge);stroke-width:1.6;transition:opacity .2s,stroke .2s}
+.edge.dash{stroke-dasharray:5 4}
+.elabel{font-size:11px;fill:var(--muted);paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round;transition:opacity .2s}
+.grp{fill:none;stroke:var(--group);stroke-dasharray:6 5;stroke-width:1.2;rx:12;opacity:.7}
+.glabel{font-size:11px;font-weight:700;letter-spacing:.07em;fill:var(--muted);text-transform:uppercase}
+.dim{opacity:.3}
+.hot .edge,.edge.hot{stroke:var(--flow);stroke-width:2.4}
+.particle{fill:var(--flow)}
+@media (prefers-reduced-motion: reduce){.particle{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 id="title"></h1>
+  <p class="sub" id="subtitle"></p>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="bar">
+    <button class="btn primary" id="play">▶ Walk through</button>
+    <button class="btn" id="prev" aria-label="Previous step">◀</button>
+    <button class="btn" id="next" aria-label="Next step">▶</button>
+    <button class="btn" id="reset">Reset</button>
+    <label class="chk"><input type="checkbox" id="flow" checked> Animate data flow</label>
+  </div>
+  <div class="canvas"><svg id="svg" role="img"></svg></div>
+  <div class="caption" id="caption"><b>How to use</b>Press “Walk through” to follow one run step by step, or click any box for what it does and where the code lives.</div>
+  <div class="detail" id="detail"><p class="hint">Click a box to see details.</p></div>
+  <div class="legend" id="legend"></div>
+</div>
+<script>
+const SPEC = {"title": "alberta-lmp-lab: from AESO files to an agent", "subtitle": "Eight pipeline steps on AESO's public 2025 data. Click a step, or follow one run from download to dashboard.", "repoUrl": "https://github.com/jma-repo/alberta-lmp-lab", "views": [{"label": "Pipeline (lmplab all)", "cw": 240, "nw": 180, "ch": 105, "groups": [{"label": "uv run lmplab all --no-llm: weekly in GitHub Actions", "c1": 1, "r1": 0, "c2": 5, "r2": 3}], "nodes": [{"id": "SRC", "c": 0, "r": 1.5, "label": "AESO public files", "sub": "backcast LMPs, load, gen", "kind": "source", "desc": "2025 area-level backcast LMPs and planning-area hourly load and generation. Downloaded by `lmplab fetch` (23 MB) and never committed.", "file": "", "facts": ""}, {"id": "ING", "c": 1, "r": 1.5, "label": "ingest", "sub": "data-quality gate", "kind": "gate", "desc": "Loads AESO files into DuckDB behind data-quality checks.", "file": "src/lmplab/ingest.py", "facts": ""}, {"id": "WH", "c": 2, "r": 1.5, "label": "DuckDB warehouse", "sub": "42 areas × 8,760 hours", "kind": "store", "desc": "One LMP per planning area per hour.", "file": "", "facts": ""}, {"id": "AN", "c": 3, "r": 0, "label": "analyze", "sub": "separation, surplus, hubs", "kind": "process", "desc": "Basis, price separation and uniform-price surplus. Contiguous Ward clustering for pricing hubs. Some area priced more than $5/MWh from the ALP in **72% of hours**.", "file": "src/lmplab/analytics.py", "facts": ""}, {"id": "FC", "c": 3, "r": 1, "label": "forecast", "sub": "LightGBM + conformal bands", "kind": "ai", "desc": "One LightGBM model for all areas, quantile models with rolling conformal calibration, SHAP drivers and a separation-risk classifier. Test error **$3.05/MWh vs $4.17** for a uniform price; 80% bands cover **80.0%**.", "file": "src/lmplab/forecast.py", "facts": ""}, {"id": "SC", "c": 3, "r": 2, "label": "sced", "sub": "DC-OPF, N-1, Monte Carlo", "kind": "process", "desc": "DC optimal power flow with N-1 security and losses (HiGHS). LMP = MCE + MCL + MCC read from the duals. Reproduces AESO's three-bus Examples 1 and 3, and finds Example 2's bus C prices at **$70/MWh, not $40**.", "file": "src/lmplab/sced.py", "facts": ""}, {"id": "PD", "c": 3, "r": 3, "label": "pdup", "sub": "30 rules, AC power flow", "kind": "gate", "desc": "Reviews a synthetic wind farm submission: 10 deficiencies and 5 clarifications, every injected error found with its probable cause.", "file": "src/lmplab/pdup.py", "facts": ""}, {"id": "CFG", "c": 2, "r": 2.5, "label": "configs/ and pdup/", "sub": "7-zone network, submissions", "kind": "source", "desc": "The stylized seven-zone network and two synthetic PDUP submissions.", "file": "", "facts": ""}, {"id": "AG", "c": 4, "r": 1.5, "label": "agent", "sub": "local LLM, six tools", "kind": "ai", "desc": "A local LLM plans tool calls; every number is traced to a tool result.", "file": "src/lmplab/agent.py", "facts": ""}, {"id": "RP", "c": 5, "r": 1.5, "label": "report", "sub": "static dashboard", "kind": "output", "desc": "Builds the self-contained dashboard in `site/` from every step's results and the agent's recorded answers.", "file": "src/lmplab/report", "facts": ""}], "edges": [{"from": "SRC", "to": "ING", "label": "fetch"}, {"from": "ING", "to": "WH", "label": ""}, {"from": "WH", "to": "AN", "label": ""}, {"from": "WH", "to": "FC", "label": ""}, {"from": "CFG", "to": "SC", "label": ""}, {"from": "CFG", "to": "PD", "label": ""}, {"from": "WH", "to": "AG", "label": "read-only SQL", "dash": true, "noflow": true}, {"from": "AN", "to": "AG", "label": ""}, {"from": "FC", "to": "AG", "label": ""}, {"from": "SC", "to": "AG", "label": ""}, {"from": "PD", "to": "AG", "label": ""}, {"from": "AG", "to": "RP", "label": ""}], "steps": [{"title": "Fetch and ingest", "text": "AESO's public files are downloaded and loaded into DuckDB behind a data-quality gate.", "nodes": ["SRC", "ING", "WH"], "edges": ["SRC>ING", "ING>WH"]}, {"title": "Analyze congestion", "text": "Separation, uniform-price surplus and pricing hubs from 42 areas × 8,760 hours.", "nodes": ["WH", "AN"], "edges": ["WH>AN"]}, {"title": "Forecast", "text": "Day-ahead basis forecast with quantile models and rolling conformal calibration.", "nodes": ["WH", "FC"], "edges": ["WH>FC"]}, {"title": "SCED", "text": "A DC-OPF engine with N-1 and losses prices congestion and runs probabilistic what-ifs on the seven-zone network.", "nodes": ["CFG", "SC"], "edges": ["CFG>SC"]}, {"title": "PDUP validation", "text": "A 30-rule checklist, AC power flow and short circuit check a model submission.", "nodes": ["CFG", "PD"], "edges": ["CFG>PD"]}, {"title": "Agent", "text": "A local LLM calls six tools over the results. Without LM Studio, every step falls back to its offline path.", "nodes": ["AN", "FC", "SC", "PD", "AG"], "edges": ["AN>AG", "FC>AG", "SC>AG", "PD>AG", "WH>AG"]}, {"title": "Report", "text": "Everything is built into one self-contained dashboard.", "nodes": ["AG", "RP"], "edges": ["AG>RP"]}]}, {"label": "Agent grounding", "cw": 235, "nw": 175, "ch": 110, "nodes": [{"id": "Q", "c": 0, "r": 0, "label": "Question", "sub": "uv run lmplab ask", "kind": "source", "desc": "For example, which areas separate most in the outage season?", "file": "", "facts": ""}, {"id": "PL", "c": 1, "r": 0, "label": "Plan tool calls", "sub": "local LLM", "kind": "ai", "desc": "The model picks which tools to call.", "file": "src/lmplab/agent.py", "facts": ""}, {"id": "FB", "c": 1, "r": 1, "label": "Deterministic planner", "sub": "when no LLM server", "kind": "process", "desc": "Offline path: a rule-based planner picks the tools.", "file": "", "facts": ""}, {"id": "TL", "c": 2, "r": 0, "label": "Six tools", "sub": "SQL, hubs, SCED, PDUP …", "kind": "process", "desc": "Read-only SQL, area profiles, hub designs, SCED what-ifs, PDUP reviews and AESO examples.", "file": "", "facts": ""}, {"id": "FA", "c": 3, "r": 0, "label": "Verified fact sentences", "sub": "in every tool result", "kind": "gate", "desc": "Each tool result includes verified sentences so a small model cannot misread a field (an AUC of 0.67 once became “67% separation”).", "file": "", "facts": ""}, {"id": "AN", "c": 4, "r": 0, "label": "Write answer", "sub": "from the facts", "kind": "ai", "desc": "The answer is composed from tool facts.", "file": "", "facts": ""}, {"id": "TR", "c": 5, "r": 0, "label": "Trace every number", "sub": "to a tool result", "kind": "gate", "desc": "Every number in the answer must appear in a tool result.", "file": "src/lmplab/llm.py", "facts": ""}], "edges": [{"from": "Q", "to": "PL", "label": ""}, {"from": "PL", "to": "FB", "label": "no LLM server", "dash": true}, {"from": "PL", "to": "TL", "label": ""}, {"from": "FB", "to": "TL", "label": "", "sides": "rb", "dash": true}, {"from": "TL", "to": "FA", "label": ""}, {"from": "FA", "to": "AN", "label": ""}, {"from": "AN", "to": "TR", "label": ""}], "steps": [{"title": "Ask", "text": "A question goes to the planner.", "nodes": ["Q", "PL"], "edges": ["Q>PL"]}, {"title": "Plan", "text": "The local LLM chooses tool calls; if there is no server, a deterministic planner does it.", "nodes": ["PL", "FB"], "edges": ["PL>FB", "FB>TL"]}, {"title": "Call tools", "text": "The tools return results with verified fact sentences.", "nodes": ["PL", "TL", "FA"], "edges": ["PL>TL", "TL>FA"]}, {"title": "Answer and trace", "text": "The answer is written from the facts, then every number is traced back to a tool result.", "nodes": ["FA", "AN", "TR"], "edges": ["FA>AN", "AN>TR"]}]}]};
+const NS = "http://www.w3.org/2000/svg";
+const $ = id => document.getElementById(id);
+const KINDS = {source:"Input / source", process:"Process", store:"Store", output:"Output", gate:"Gate / control", ai:"AI / model"};
+let view, vi = 0, step = -1, timer = null, selected = null;
+
+function el(name, attrs = {}, parent) {
+  const e = document.createElementNS(NS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}
+function md(s){return esc(s).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>")}
+
+$("title").textContent = SPEC.title;
+$("subtitle").textContent = SPEC.subtitle;
+const tabs = $("tabs");
+SPEC.views.forEach((v, i) => {
+  const b = document.createElement("button");
+  b.className = "tab"; b.role = "tab"; b.textContent = v.label;
+  b.onclick = () => { stop(); vi = i; render(); };
+  tabs.appendChild(b);
+});
+const used = new Set();
+SPEC.views.forEach(v => v.nodes.forEach(n => used.add(n.kind || "process")));
+$("legend").innerHTML = [...used].map(k => `<span><i style="background:var(--${k});border-color:var(--${k}-b)"></i>${KINDS[k]}</span>`).join("");
+
+function geom(v) {
+  const cw = v.cw || 250, ch = v.ch || 110, nw = v.nw || 188, nh = v.nh || 64, pad = 40, top = v.top ?? 12;
+  const pos = {};
+  v.nodes.forEach(n => {
+    const w = (n.w || 1) * cw - (cw - nw);
+    pos[n.id] = {x: pad + n.c * cw + (cw - nw) / 2, y: pad + top + n.r * ch + (ch - nh) / 2, w, h: nh};
+  });
+  const maxC = Math.max(...v.nodes.map(n => n.c + (n.w || 1)));
+  const maxR = Math.max(...v.nodes.map(n => n.r)) + 1;
+  return {pos, W: pad * 2 + maxC * cw, H: pad * 2 + top + maxR * ch + (v.extraH || 0), cw, ch, pad, top};
+}
+function anchor(p, side, off = 0) {
+  switch (side) {
+    case "r": return [p.x + p.w, p.y + p.h / 2 + off, 1, 0];
+    case "l": return [p.x, p.y + p.h / 2 + off, -1, 0];
+    case "t": return [p.x + p.w / 2 + off, p.y, 0, -1];
+    default:  return [p.x + p.w / 2 + off, p.y + p.h, 0, 1];
+  }
+}
+function defaultSides(a, b) {
+  const dc = b.x - a.x, dr = b.y - a.y;
+  if (Math.abs(dc) > 40) return dc > 0 ? ["r", "l"] : ["l", "r"];
+  return dr > 0 ? ["b", "t"] : ["t", "b"];
+}
+function edgePath(e, pos) {
+  const A = pos[e.from], B = pos[e.to];
+  const [s0, s1] = e.sides ? e.sides.split("") : defaultSides(A, B);
+  const a = anchor(A, s0, e.off || 0), b = anchor(B, s1, e.off2 ?? 0);
+  const d = Math.max(36, Math.hypot(a[0] - b[0], a[1] - b[1]) / 2.4) + (e.bend || 0);
+  const c1 = [a[0] + a[2] * d, a[1] + a[3] * d], c2 = [b[0] + b[2] * d, b[1] + b[3] * d];
+  const mid = [(a[0] + 3 * c1[0] + 3 * c2[0] + b[0]) / 8, (a[1] + 3 * c1[1] + 3 * c2[1] + b[1]) / 8];
+  return {d: `M${a[0]},${a[1]} C${c1[0]},${c1[1]} ${c2[0]},${c2[1]} ${b[0]},${b[1]}`, mid};
+}
+
+function render() {
+  view = SPEC.views[vi]; step = -1; selected = null;
+  [...tabs.children].forEach((b, i) => b.setAttribute("aria-selected", i === vi));
+  const g = geom(view), svg = $("svg");
+  svg.innerHTML = ""; svg.setAttribute("viewBox", `0 0 ${g.W} ${g.H}`);
+  svg.setAttribute("aria-label", view.label + " diagram");
+  const defs = el("defs", {}, svg);
+  const mk = el("marker", {id: "ah", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse"}, defs);
+  el("path", {d: "M0,0 L10,5 L0,10 z", fill: "var(--edge)"}, mk);
+  const mk2 = el("marker", {id: "ahh", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse"}, defs);
+  el("path", {d: "M0,0 L10,5 L0,10 z", fill: "var(--flow)"}, mk2);
+
+  (view.groups || []).forEach(gr => {
+    const x = g.pad + gr.c1 * g.cw + 6, y = g.pad + g.top + gr.r1 * g.ch + 2;
+    const w = (gr.c2 - gr.c1 + 1) * g.cw - 12, h = (gr.r2 - gr.r1 + 1) * g.ch - 4;
+    el("rect", {class: "grp", x, y, width: w, height: h}, svg);
+    const t = el("text", {class: "glabel", x: x + 12, y: y + 16}, svg); t.textContent = gr.label;
+  });
+
+  const edgeEls = {}, labelEls = {};
+  const eg = el("g", {}, svg), pg = el("g", {}, svg);
+  view.edges.forEach((e, i) => {
+    e.id = e.from + ">" + e.to + (e.key ? ":" + e.key : "");
+    const {d, mid} = edgePath(e, g.pos);
+    const p = el("path", {class: "edge" + (e.dash ? " dash" : ""), d, "marker-end": "url(#ah)", id: "e" + i}, eg);
+    edgeEls[e.id] = p;
+    if (e.label) {
+      const t = el("text", {class: "elabel", x: mid[0], y: mid[1] + 4, "text-anchor": "middle"}, eg);
+      t.textContent = e.label; labelEls[e.id] = t;
+    }
+    e._d = d;
+  });
+  const nodeEls = {};
+  view.nodes.forEach(n => {
+    const p = g.pos[n.id];
+    const grp = el("g", {class: "node k-" + (n.kind || "process"), tabindex: 0, role: "button", "aria-label": n.label + ". " + (n.sub || "")}, svg);
+    el("rect", {x: p.x, y: p.y, width: p.w, height: p.h}, grp);
+    const l = el("text", {class: "l", x: p.x + p.w / 2, y: p.y + (n.sub ? p.h / 2 - 4 : p.h / 2 + 5), "text-anchor": "middle"}, grp);
+    l.textContent = n.label;
+    if (n.sub) { const s = el("text", {class: "s", x: p.x + p.w / 2, y: p.y + p.h / 2 + 14, "text-anchor": "middle"}, grp); s.textContent = n.sub; }
+    grp.onclick = () => select(n.id);
+    grp.onkeydown = ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(n.id); } };
+    grp.onmouseenter = () => { if (step < 0 && !selected) hover(n.id); };
+    grp.onmouseleave = () => { if (step < 0 && !selected) clearHL(); };
+    nodeEls[n.id] = grp;
+  });
+  view._els = {nodeEls, edgeEls, labelEls, pg};
+  buildParticles();
+  clearHL(); showCaption(null);
+  $("detail").innerHTML = `<p class="hint">${view.hint || "Click a box to see details."}</p>`;
+  $("prev").disabled = $("next").disabled = !(view.steps && view.steps.length);
+  $("play").style.display = $("prev").style.display = $("next").style.display = $("reset").style.display = (view.steps && view.steps.length) ? "" : "none";
+}
+
+function buildParticles() {
+  const {pg} = view._els; pg.innerHTML = "";
+  if (!$("flow").checked) return;
+  view.edges.forEach((e, i) => {
+    if (e.noflow) return;
+    const c = el("circle", {r: 3.6, class: "particle", "data-e": e.id}, pg);
+    const am = el("animateMotion", {dur: (2.6 + (i % 4) * .35) + "s", repeatCount: "indefinite", begin: (i * .37 % 2) + "s"}, c);
+    const mp = el("mpath", {}, am); mp.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#e" + i);
+  });
+}
+$("flow").onchange = () => { buildParticles(); applyParticleState(); };
+
+function activeSets() {
+  if (step >= 0) { const s = view.steps[step]; return {n: new Set(s.nodes || []), e: new Set((s.edges || []))}; }
+  if (selected) {
+    const n = new Set([selected]), e = new Set();
+    view.edges.forEach(x => { if (x.from === selected || x.to === selected) { e.add(x.id); n.add(x.from); n.add(x.to); } });
+    return {n, e};
+  }
+  return null;
+}
+function applyHL(set) {
+  const {nodeEls, edgeEls, labelEls} = view._els;
+  for (const id in nodeEls) nodeEls[id].classList.toggle("dim", !!set && !set.n.has(id));
+  for (const id in edgeEls) {
+    const on = !set || set.e.has(id);
+    edgeEls[id].classList.toggle("dim", !on);
+    edgeEls[id].classList.toggle("hot", !!set && on);
+    edgeEls[id].setAttribute("marker-end", set && on ? "url(#ahh)" : "url(#ah)");
+    if (labelEls[id]) labelEls[id].classList.toggle("dim", !on);
+  }
+  applyParticleState(set);
+}
+function applyParticleState(set = activeSets()) {
+  view._els.pg.querySelectorAll("circle").forEach(c => { c.style.opacity = set && !set.e.has(c.dataset.e) ? 0 : 1; });
+}
+function hover(id) {
+  const n = new Set([id]), e = new Set();
+  view.edges.forEach(x => { if (x.from === id || x.to === id) { e.add(x.id); n.add(x.from); n.add(x.to); } });
+  applyHL({n, e});
+}
+function clearHL() { applyHL(activeSets()); }
+
+function select(id) {
+  const n = view.nodes.find(x => x.id === id);
+  selected = selected === id ? null : id;
+  Object.entries(view._els.nodeEls).forEach(([k, g]) => g.classList.toggle("sel", k === selected));
+  if (step >= 0) { stop(true); }
+  clearHL();
+  if (!selected) { $("detail").innerHTML = `<p class="hint">Click a box to see details.</p>`; return; }
+  const ins = view.edges.filter(e => e.to === id).map(e => view.nodes.find(x => x.id === e.from).label);
+  const outs = view.edges.filter(e => e.from === id).map(e => view.nodes.find(x => x.id === e.to).label);
+  let h = `<h2>${esc(n.label)}</h2>`;
+  if (n.desc) h += `<p>${md(n.desc)}</p>`;
+  if (n.facts) h += `<p>${md(n.facts)}</p>`;
+  if (ins.length || outs.length) h += `<p class="hint">${ins.length ? "From: " + esc(ins.join(", ")) : ""}${ins.length && outs.length ? " · " : ""}${outs.length ? "To: " + esc(outs.join(", ")) : ""}</p>`;
+  if (n.file) h += `<p>Code: <a href="${SPEC.repoUrl}/blob/main/${n.file}" target="_blank" rel="noopener"><code>${esc(n.file)}</code></a></p>`;
+  $("detail").innerHTML = h;
+}
+
+function showCaption(i) {
+  const c = $("caption");
+  if (i === null || i < 0) { c.innerHTML = `<b>How to use</b>Press “Walk through” to follow one run step by step, or click any box for what it does and where the code lives.`; return; }
+  const s = view.steps[i];
+  c.innerHTML = `<b>Step ${i + 1} of ${view.steps.length} · ${esc(s.title)}</b>${md(s.text)}`;
+}
+function go(i) {
+  const n = view.steps.length;
+  step = (i + n) % n; selected = null;
+  Object.values(view._els.nodeEls).forEach(g => g.classList.remove("sel"));
+  view.steps[step].edges = (view.steps[step].edges || []);
+  applyHL(activeSets()); showCaption(step);
+}
+function stop(keepHL) {
+  clearInterval(timer); timer = null; $("play").textContent = "▶ Walk through";
+  if (!keepHL) { step = -1; clearHL(); showCaption(null); } else { step = -1; showCaption(null); }
+}
+$("play").onclick = () => {
+  if (timer) { stop(true); return; }
+  $("play").textContent = "⏸ Pause";
+  go(step < 0 ? 0 : step + 1);
+  timer = setInterval(() => go(step + 1), 3800);
+};
+$("next").onclick = () => { clearInterval(timer); timer = null; $("play").textContent = "▶ Walk through"; go(step + 1); };
+$("prev").onclick = () => { clearInterval(timer); timer = null; $("play").textContent = "▶ Walk through"; go(step < 0 ? view.steps.length - 1 : step - 1); };
+$("reset").onclick = () => { stop(); selected = null; Object.values(view._els.nodeEls).forEach(g => g.classList.remove("sel")); clearHL(); $("detail").innerHTML = `<p class="hint">Click a box to see details.</p>`; };
+render();
+</script>
+</body>
+</html>
